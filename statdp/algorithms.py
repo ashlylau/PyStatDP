@@ -22,15 +22,36 @@
 from itertools import zip_longest
 
 import numpy as np
-
+import pydp as dp
+from diffprivlib import tools as ibm
+import warnings 
 
 def _hamming_distance(result1, result2):
     # implement hamming distance in pure python, faster than np.count_zeros if inputs are plain python list
     return sum(res1 != res2 for res1, res2 in zip_longest(result1, result2))
 
+def dp_mean(prng,queries, epsilon):
+    #PyDP mean
+    x = dp.BoundedMean(epsilon,-15,15)
+    return x.result(queries);
+
+def simple_mean(prngqueries, epsilon):
+    #INCORRECT litterally no dp
+    return mean(queries)
+
+def dp_max(prngqueries, epsilon):
+    x = dp.Max(epsilon)
+    return x.result(queries,epsilon)
+
+def histogram_ibm(prng,queries, epsilon):
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        hist, bins = ibm.histogram(queries, epsilon = epsilon, bins =100)
+        return hist
 
 def noisy_max_v1a(prng, queries, epsilon):
     # find the largest noisy element and return its index
+    prng = np.random.default_rng()
     return (np.asarray(queries, dtype=np.float64) + prng.laplace(scale=2.0 / epsilon, size=len(queries))).argmax()
 
 
