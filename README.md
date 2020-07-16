@@ -1,7 +1,5 @@
-# StatDP 
-[![Github Actions](https://github.com/yxwangcs/statdp/workflows/build/badge.svg)](https://github.com/yxwangcs/statdp/actions?workflow=build) [![codecov](https://codecov.io/gh/yxwangcs/statdp/branch/master/graph/badge.svg)](https://codecov.io/gh/yxwangcs/statdp)
-
-Statistical Counterexample Detector for Differential Privacy.
+# PyStatDP 
+This is a fork of [cmla-psu/statdp Statistical Counterexample Detector for Differential Privacy](https://github.com/cmla-psu/statdp) created to explore the possiblity of integrating it into the CI workfollow of projects with differentially private elements.
 
 ## Usage
 We assume your algorithm implementation has the folllowing signature: `(prng, queries, epsilon, ...)` (Pseudo-random generator, list of queries, privacy budget and extra arguments).
