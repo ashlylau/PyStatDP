@@ -85,7 +85,7 @@ You can checkout the definition and docstrings of the functions respectively to 
 
 ## Citing this work
 
-You are encouraged to cite the following [paper](https://arxiv.org/pdf/1805.10277.pdf) if you use this tool for academic research:
+You are encouraged to cite the orginal StatDp [paper](https://arxiv.org/pdf/1805.10277.pdf) if you use this tool for academic research:
 
 ```bibtex
 @inproceedings{ding2018detecting,
