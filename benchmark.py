@@ -27,15 +27,16 @@ import logging
 import matplotlib
 import matplotlib.pyplot as plt
 from statdp import detect_counterexample, ONE_DIFFER, ALL_DIFFER
-from statdp.algorithms import noisy_max_v1a, noisy_max_v1b, noisy_max_v2a, noisy_max_v2b, SVT, iSVT1,\
-    iSVT2, iSVT3, iSVT4, histogram, histogram_eps, dp_mean
-
+from statdp.algorithms import dp_mean, dp_max, dp_bounded_standard_deviation, \
+    dp_bounded_sum, dp_bounded_variance, dp_median, dp_percentile, dp_bounded_variance
+# noisy_max_v1a, noisy_max_v1b, noisy_max_v2a, noisy_max_v2b, SVT, iSVT1, iSVT2, iSVT3, iSVT4, histogram, histogram_eps,
 # switch matplotlib backend for running in background
 matplotlib.use('agg')
 matplotlib.rcParams['xtick.labelsize'] = '12'
 matplotlib.rcParams['ytick.labelsize'] = '12'
 
-coloredlogs.install('INFO', fmt='%(asctime)s [0x%(process)x] %(levelname)s %(message)s')
+coloredlogs.install(
+    'INFO', fmt='%(asctime)s [0x%(process)x] %(levelname)s %(message)s')
 logger = logging.getLogger(__name__)
 
 
@@ -63,7 +64,8 @@ def plot_result(data, xlabel, ylabel, title, output_filename):
     plt.axhline(y=0.05, color='black', linestyle='dashed', linewidth=1.2)
     for i, (epsilon, points) in enumerate(data.items()):
         # add an auxiliary vertical line for the claimed privacy
-        plt.axvline(x=float(epsilon), color=colors[i % len(colors)], linestyle='dashed', linewidth=1.2)
+        plt.axvline(x=float(epsilon), color=colors[i % len(
+            colors)], linestyle='dashed', linewidth=1.2)
         # plot the
         x = [item[0] for item in points]
         p = [item[1] for item in points]
@@ -82,22 +84,29 @@ def plot_result(data, xlabel, ylabel, title, output_filename):
 def main():
     # list of tasks to test, each tuple contains (function, extra_args, sensitivity)
     tasks = [
-        (dp_mean, {}, ALL_DIFFER),
-        (noisy_max_v1a, {}, ALL_DIFFER),
-        (noisy_max_v1b, {}, ALL_DIFFER),
-        (noisy_max_v2a, {}, ALL_DIFFER),
-        (noisy_max_v2b, {}, ALL_DIFFER),
-        (histogram, {}, ONE_DIFFER),
-        (histogram_eps, {}, ONE_DIFFER),
-        (SVT, {'N': 1, 'T': 0.5}, ALL_DIFFER),
-        (iSVT1, {'T': 1, 'N': 1}, ALL_DIFFER),
-        (iSVT2, {'T': 1, 'N': 1}, ALL_DIFFER),
-        (iSVT3, {'T': 1, 'N': 1}, ALL_DIFFER),
-        (iSVT4, {'T': 1, 'N': 1}, ALL_DIFFER)
+    #    (dp_mean, {}, ALL_DIFFER), # works good, tested.
+    #    (dp_max, {}, ALL_DIFFER),
+        (dp_bounded_standard_deviation,  {}, ALL_DIFFER),
+        (dp_bounded_sum,  {}, ALL_DIFFER),
+        (dp_bounded_variance,  {}, ALL_DIFFER),
+        (dp_median,  {}, ALL_DIFFER),
+        (dp_percentile,  {}, ALL_DIFFER),
+        (dp_bounded_variance, {}, ALL_DIFFER),
+        # (noisy_max_v1a, {}, ALL_DIFFER),
+        # (noisy_max_v1b, {}, ALL_DIFFER),
+        # (noisy_max_v2a, {}, ALL_DIFFER),
+        # (noisy_max_v2b, {}, ALL_DIFFER),
+        # (histogram, {}, ONE_DIFFER),
+        # (histogram_eps, {}, ONE_DIFFER),
+        # (SVT, {'N': 1, 'T': 0.5}, ALL_DIFFER),
+        # (iSVT1, {'T': 1, 'N': 1}, ALL_DIFFER),
+        # (iSVT2, {'T': 1, 'N': 1}, ALL_DIFFER),
+        # (iSVT3, {'T': 1, 'N': 1}, ALL_DIFFER),
+        # (iSVT4, {'T': 1, 'N': 1}, ALL_DIFFER)
     ]
 
     # claimed privacy level to check
-    claimed_privacy = (0.2, 0.7, 1.5)
+    claimed_privacy = (0.2, 0.7, 1.5)  # alter these values
 
     # privacy levels to test, here we test from a range of 0.1 - 2.0 with a stepping of 0.1
     test_privacy = tuple(x / 10.0 for x in range(1, 20, 1))
@@ -108,12 +117,14 @@ def main():
         for privacy_budget in claimed_privacy:
             # set the third argument of the function (assumed to be `epsilon`) to the claimed privacy level
             kwargs[algorithm.__code__.co_varnames[2]] = privacy_budget
-            results[privacy_budget] = detect_counterexample(algorithm, test_privacy, kwargs, sensitivity=sensitivity)
+            results[privacy_budget] = detect_counterexample(
+                algorithm, test_privacy, kwargs, sensitivity=sensitivity)
 
         # dump the results to file
         json_file = pathlib.Path.cwd() / f'{algorithm.__name__}.json'
         if json_file.exists():
-            logger.warning(f'{algorithm.__name__}.json already exists, note that it will be over-written')
+            logger.warning(
+                f'{algorithm.__name__}.json already exists, note that it will be over-written')
             json_file.unlink()
 
         with json_file.open('w') as f:
@@ -122,12 +133,15 @@ def main():
         # plot and save to file
         plot_file = pathlib.Path.cwd() / f'{algorithm.__name__}.pdf'
         if plot_file.exists():
-            logger.warning(f'{algorithm.__name__}.pdf already exists, it will be over-written')
+            logger.warning(
+                f'{algorithm.__name__}.pdf already exists, it will be over-written')
             plot_file.unlink()
 
-        plot_result(results, r'Test $\epsilon$', 'P Value', algorithm.__name__.replace('_', ' ').title(), plot_file)
+        plot_result(results, r'Test $\epsilon$', 'P Value',
+                    algorithm.__name__.replace('_', ' ').title(), plot_file)
 
-        total_time, total_detections = time.time() - start_time, len(claimed_privacy) * len(test_privacy)
+        total_time, total_detections = time.time() - start_time, len(claimed_privacy) * \
+            len(test_privacy)
         logger.info(f'[{i + 1} / {len(tasks)}]: {algorithm.__name__} | Time elapsed: {total_time:5.3f}s | '
                     f'Average time per detection: {total_time / total_detections:5.3f}s')
 
