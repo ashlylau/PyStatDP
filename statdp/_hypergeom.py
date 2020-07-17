@@ -82,7 +82,8 @@ def sf(k, M, n, N):
     :return: the cumulative density for given parameter
     """
     if N > M:
-        raise ValueError('The number of draws (N) is larger than the total number of objects (M)')
+        raise ValueError(
+            'The number of draws (N) is larger than the total number of objects (M)')
     if k >= min(n, N):
         return 0
     elif k < 0:

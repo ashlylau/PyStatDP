@@ -46,7 +46,8 @@ def test_statistics(cx, cy, epsilon, iterations):
     sample_num = 200
     p_value = 0
     for new_cx in np.random.binomial(cx, 1.0 / (np.exp(epsilon)), sample_num):
-        p_value += hypergeom.sf(new_cx - 1, 2 * iterations, iterations, new_cx + cy)
+        p_value += hypergeom.sf(new_cx - 1, 2 * iterations,
+                                iterations, new_cx + cy)
     return p_value / sample_num
 
 
@@ -67,9 +68,11 @@ def hypothesis_test(algorithm, d1, d2, kwargs, event, epsilon, iterations, proce
     # may break in the future, therefore we fall back to mp.cpu_count() if it is not accessible
     core_count = process_pool._processes if process_pool._processes and isinstance(process_pool._processes, int) \
         else mp.cpu_count()
-    process_iterations = [int(math.floor(float(iterations) / core_count)) for _ in range(core_count)]
+    process_iterations = [
+        int(math.floor(float(iterations) / core_count)) for _ in range(core_count)]
     # add the remaining iterations to the last index
-    process_iterations[core_count - 1] += iterations % process_iterations[core_count - 1]
+    process_iterations[core_count -
+                       1] += iterations % process_iterations[core_count - 1]
 
     # start the pool to run the algorithm and collects the statistics
     cx, cy = 0, 0

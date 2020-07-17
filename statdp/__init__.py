@@ -52,16 +52,20 @@ def detect_counterexample(algorithm, test_epsilon, default_kwargs=None, database
     default_kwargs = default_kwargs if default_kwargs else {}
 
     logging.basicConfig(level=loglevel)
-    logger.info(f'Start detection for counterexample on {algorithm.__name__} with test epsilon {test_epsilon}')
-    logger.info(f'Options -> default_kwargs: {default_kwargs} | databases: {databases} | cores:{cores}')
+    logger.info(
+        f'Start detection for counterexample on {algorithm.__name__} with test epsilon {test_epsilon}')
+    logger.info(
+        f'Options -> default_kwargs: {default_kwargs} | databases: {databases} | cores:{cores}')
 
     input_list = []
     if databases is not None:
         d1, d2 = databases
-        kwargs = generate_arguments(algorithm, d1, d2, default_kwargs=default_kwargs)
+        kwargs = generate_arguments(
+            algorithm, d1, d2, default_kwargs=default_kwargs)
         input_list = ((d1, d2, kwargs),)
     else:
-        num_input = (int(num_input), ) if isinstance(num_input, (int, float)) else num_input
+        num_input = (int(num_input), ) if isinstance(
+            num_input, (int, float)) else num_input
         for num in num_input:
             input_list.extend(
                 generate_databases(algorithm, num, default_kwargs=default_kwargs, sensitivity=sensitivity))
@@ -69,7 +73,8 @@ def detect_counterexample(algorithm, test_epsilon, default_kwargs=None, database
     result = []
 
     # convert int/float or iterable into tuple (so that it has length information)
-    test_epsilon = (test_epsilon, ) if isinstance(test_epsilon, (int, float)) else test_epsilon
+    test_epsilon = (test_epsilon, ) if isinstance(
+        test_epsilon, (int, float)) else test_epsilon
 
     with mp.Pool(cores) as pool:
         for _, epsilon in tqdm.tqdm(enumerate(test_epsilon), total=len(test_epsilon), unit='test', desc='Detection',
@@ -80,7 +85,8 @@ def detect_counterexample(algorithm, test_epsilon, default_kwargs=None, database
                                 process_pool=pool)
             result.append((epsilon, float(p), d1, d2, kwargs, event))
             if not quiet:
-                tqdm.tqdm.write(f'Epsilon: {epsilon} | p-value: {p:5.3f} | Event: {event}')
+                tqdm.tqdm.write(
+                    f'Epsilon: {epsilon} | p-value: {p:5.3f} | Event: {event}')
             logger.debug(f'D1: {d1} | D2: {d2} | kwargs: {kwargs}')
 
         return result

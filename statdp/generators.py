@@ -45,7 +45,8 @@ def generate_arguments(algorithm, d1, d2, default_kwargs):
     """
     arguments = algorithm.__code__.co_varnames[:algorithm.__code__.co_argcount]
     if arguments[2] not in default_kwargs:
-        logger.error(f'The third argument {arguments[2]} (privacy budget) is not provided!')
+        logger.error(
+            f'The third argument {arguments[2]} (privacy budget) is not provided!')
         return None
 
     return default_kwargs
@@ -60,7 +61,8 @@ def generate_databases(algorithm, num_input, default_kwargs, sensitivity=ALL_DIF
     :return: List of (d1, d2, args) with length num_input
     """
     if not isinstance(sensitivity, Sensitivity):
-        raise ValueError('sensitivity must be statdp.ALL_DIFFER or statdp.ONE_DIFFER')
+        raise ValueError(
+            'sensitivity must be statdp.ALL_DIFFER or statdp.ONE_DIFFER')
 
     # assume maximum distance is 1
     d1 = [1 for _ in range(num_input)]
@@ -71,10 +73,13 @@ def generate_databases(algorithm, num_input, default_kwargs, sensitivity=ALL_DIF
 
     if sensitivity == ALL_DIFFER:
         candidates.extend([
-            (d1, [2] + [0 for _ in range(num_input - 1)]),  # one above rest below
-            (d1, [0] + [2 for _ in range(num_input - 1)]),  # one below rest above
+            # one above rest below
+            (d1, [2] + [0 for _ in range(num_input - 1)]),
+            # one below rest above
+            (d1, [0] + [2 for _ in range(num_input - 1)]),
             # half half
-            (d1, [2 for _ in range(int(num_input / 2))] + [0 for _ in range(num_input - int(num_input / 2))]),
+            (d1, [2 for _ in range(int(num_input / 2))] + \
+             [0 for _ in range(num_input - int(num_input / 2))]),
             (d1, [2 for _ in range(num_input)]),  # all above
             (d1, [0 for _ in range(num_input)]),  # all below
             # x shape

@@ -50,7 +50,8 @@ def select_event(algorithm, input_list, epsilon, iterations, process_pool, quiet
         raise ValueError('Algorithm must be callable')
 
     # fill in other arguments for _evaluate_input function, leaving out `input` to be filled
-    partial_evaluate_input = functools.partial(_evaluate_input, algorithm=algorithm, iterations=iterations)
+    partial_evaluate_input = functools.partial(
+        _evaluate_input, algorithm=algorithm, iterations=iterations)
 
     threshold = 0.001 * iterations * np.exp(epsilon)
 
@@ -66,7 +67,8 @@ def select_event(algorithm, input_list, epsilon, iterations, process_pool, quiet
 
         # calculate p-values based on counts
         for (cx, cy) in local_counts:
-            p_values.append(test_statistics(cx, cy, epsilon, iterations) if cx + cy > threshold else float('inf'))
+            p_values.append(test_statistics(cx, cy, epsilon, iterations)
+                            if cx + cy > threshold else float('inf'))
 
     # log the information for debug purposes
     for ((d1, d2, kwargs, event), (cx, cy), p) in zip(input_event_pairs, counts, p_values):
