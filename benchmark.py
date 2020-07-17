@@ -28,7 +28,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from statdp import detect_counterexample, ONE_DIFFER, ALL_DIFFER
 from statdp.algorithms import noisy_max_v1a, noisy_max_v1b, noisy_max_v2a, noisy_max_v2b, SVT, iSVT1,\
-    iSVT2, iSVT3, iSVT4, histogram, histogram_eps, histogram_ibm,  dp_mean, dp_max
+    iSVT2, iSVT3, iSVT4, histogram, histogram_eps, dp_mean
 
 # switch matplotlib backend for running in background
 matplotlib.use('agg')
@@ -83,19 +83,17 @@ def main():
     # list of tasks to test, each tuple contains (function, extra_args, sensitivity)
     tasks = [
         (dp_mean, {}, ALL_DIFFER),
-        (dp_max, {}, ALL_DIFFER),
-        (histogram_ibm, {}, ALL_DIFFER),
-        #(noisy_max_v1a, {}, ALL_DIFFER),
-        #(noisy_max_v1b, {}, ALL_DIFFER),
-        #(noisy_max_v2a, {}, ALL_DIFFER),
-        #(noisy_max_v2b, {}, ALL_DIFFER),
-        #(histogram, {}, ONE_DIFFER),
-        #(histogram_eps, {}, ONE_DIFFER),
-        #(SVT, {'N': 1, 'T': 0.5}, ALL_DIFFER),
-        #(iSVT1, {'T': 1, 'N': 1}, ALL_DIFFER),
-        #(iSVT2, {'T': 1, 'N': 1}, ALL_DIFFER),
-        #(iSVT3, {'T': 1, 'N': 1}, ALL_DIFFER),
-        #(iSVT4, {'T': 1, 'N': 1}, ALL_DIFFER)
+        (noisy_max_v1a, {}, ALL_DIFFER),
+        (noisy_max_v1b, {}, ALL_DIFFER),
+        (noisy_max_v2a, {}, ALL_DIFFER),
+        (noisy_max_v2b, {}, ALL_DIFFER),
+        (histogram, {}, ONE_DIFFER),
+        (histogram_eps, {}, ONE_DIFFER),
+        (SVT, {'N': 1, 'T': 0.5}, ALL_DIFFER),
+        (iSVT1, {'T': 1, 'N': 1}, ALL_DIFFER),
+        (iSVT2, {'T': 1, 'N': 1}, ALL_DIFFER),
+        (iSVT3, {'T': 1, 'N': 1}, ALL_DIFFER),
+        (iSVT4, {'T': 1, 'N': 1}, ALL_DIFFER)
     ]
 
     # claimed privacy level to check
@@ -108,8 +106,8 @@ def main():
         start_time = time.time()
         results = {}
         for privacy_budget in claimed_privacy:
-            # set the second argument of the function (assumed to be `epsilon`) to the claimed privacy level
-            kwargs[algorithm.__code__.co_varnames[1]] = privacy_budget
+            # set the third argument of the function (assumed to be `epsilon`) to the claimed privacy level
+            kwargs[algorithm.__code__.co_varnames[2]] = privacy_budget
             results[privacy_budget] = detect_counterexample(algorithm, test_privacy, kwargs, sensitivity=sensitivity)
 
         # dump the results to file
