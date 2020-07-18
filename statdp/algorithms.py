@@ -49,27 +49,25 @@ def dp_max(prng, queries, epsilon):
 
 def dp_bounded_standard_deviation(prng, queries, epsilon): # dict to get all the parameters
     # INCORRECT, issue with params
-    return dp.BoundedStandardDeviation(epsilon, 0, 15).result(queries, epsilon)
+    return dp.BoundedStandardDeviation(epsilon, 0, 15).result(queries)
 
 
 def dp_bounded_sum(prng, queries, epsilon):
-    return dp.BoundedSum(epsilon, 0, 10).result(queries, epsilon)
+    return dp.BoundedSum(epsilon, 0, 10).result(queries)
 
 
 def dp_bounded_variance(prng, queries, epsilon):
-    return dp.BoundedVariance(epsilon, 0, 16).result(queries, epsilon)
+    return dp.BoundedVariance(epsilon, 0, 16).result(queries)
 
 
 def dp_median(prng, queries, epsilon):
-    return dp.Median(epsilon).result(queries, epsilon)
+    x= dp.Median(epsilon)
+    return x.result(queries, epsilon)
 
 
 def dp_percentile(prng, queries, epsilon):
     return dp.Percentile(epsilon).result(queries, epsilon)
 
-
-def dp_bounded_variance(prng, queries, epsilon):
-    return dp.Min(epsilon).result(queries, epsilon)
 
 
 def noisy_max_v1b(prng, queries, epsilon):

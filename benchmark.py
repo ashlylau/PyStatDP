@@ -84,14 +84,13 @@ def plot_result(data, xlabel, ylabel, title, output_filename):
 def main():
     # list of tasks to test, each tuple contains (function, extra_args, sensitivity)
     tasks = [
-    #    (dp_mean, {}, ALL_DIFFER), # works good, tested.
-    #    (dp_max, {}, ALL_DIFFER),
-        (dp_bounded_standard_deviation,  {}, ALL_DIFFER),
-        (dp_bounded_sum,  {}, ALL_DIFFER),
-        (dp_bounded_variance,  {}, ALL_DIFFER),
-        (dp_median,  {}, ALL_DIFFER),
+        #(dp_mean, {}, ALL_DIFFER), # works good, tested.
+        #(dp_max, {}, ALL_DIFFER), # works good, tested.
+        # works good, tested.(dp_bounded_standard_deviation,  {}, ALL_DIFFER),
+        # works good, tested.(dp_bounded_sum,  {}, ALL_DIFFER),
+        # works good, tested.(dp_bounded_variance,  {}, ALL_DIFFER),
+        #(dp_median,  {}, ALL_DIFFER),
         (dp_percentile,  {}, ALL_DIFFER),
-        (dp_bounded_variance, {}, ALL_DIFFER),
         # (noisy_max_v1a, {}, ALL_DIFFER),
         # (noisy_max_v1b, {}, ALL_DIFFER),
         # (noisy_max_v2a, {}, ALL_DIFFER),
@@ -106,10 +105,10 @@ def main():
     ]
 
     # claimed privacy level to check
-    claimed_privacy = (0.2, 0.7, 1.5)  # alter these values
+    claimed_privacy = (0.2,)  # alter these values
 
-    # privacy levels to test, here we test from a range of 0.1 - 2.0 with a stepping of 0.1
-    test_privacy = tuple(x / 10.0 for x in range(1, 20, 1))
+    # privacy levels to test, here we test from a range of 0.1 - 1.0 with a stepping of 0.1
+    test_privacy = tuple(x / 10.0 for x in range(1, 10, 1))
 
     for i, (algorithm, kwargs, sensitivity) in enumerate(tasks):
         start_time = time.time()
