@@ -89,7 +89,7 @@ def main():
         # works good, tested.(dp_bounded_standard_deviation,  {}, ALL_DIFFER),
         # works good, tested.(dp_bounded_sum,  {}, ALL_DIFFER),
         # works good, tested.(dp_bounded_variance,  {}, ALL_DIFFER),
-        #(dp_median,  {}, ALL_DIFFER),
+        (dp_median,  {}, ALL_DIFFER),
         (dp_percentile,  {}, ALL_DIFFER),
         # (noisy_max_v1a, {}, ALL_DIFFER),
         # (noisy_max_v1b, {}, ALL_DIFFER),

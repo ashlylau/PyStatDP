@@ -47,7 +47,8 @@ def dp_max(prng, queries, epsilon):
     return x.result(queries, epsilon)
 
 
-def dp_bounded_standard_deviation(prng, queries, epsilon): # dict to get all the parameters
+# dict to get all the parameters
+def dp_bounded_standard_deviation(prng, queries, epsilon):
     # INCORRECT, issue with params
     return dp.BoundedStandardDeviation(epsilon, 0, 15).result(queries)
 
@@ -68,6 +69,19 @@ def dp_median(prng, queries, epsilon):
 def dp_percentile(prng, queries, epsilon):
     return dp.Percentile(epsilon).result(queries, epsilon)
 
+
+
+def generic_method(prng, queries, epsilon, algorithm, param_for_algorithm: tuple(int))
+
+'''
+    A generic method to route incoming tasks.
+    param prng: Psuedo random number generator, ! to be removed.
+    param queries: queries to the algorithm
+    param epsilon: privacy budget
+    param algorithm: The algorithm to be tested; (e.g dp.BoundedMean, dp.BoundedSum)
+    param param_to_algorithm (a tuple): inputs to the algortihm. 
+    '''
+return algorithm(epsilon, *param_for_algorithm).result(queries, epsilon)
 
 
 def noisy_max_v1b(prng, queries, epsilon):
