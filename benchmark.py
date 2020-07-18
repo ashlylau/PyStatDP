@@ -84,8 +84,8 @@ def plot_result(data, xlabel, ylabel, title, output_filename):
 def main():
     # list of tasks to test, each tuple contains (function, extra_args, sensitivity)
     tasks = [
-    #    (dp_mean, {}, ALL_DIFFER), # works good, tested.
-    #    (dp_max, {}, ALL_DIFFER),
+        (dp_mean, {}, ALL_DIFFER),
+        (dp_max, {}, ALL_DIFFER),
         (dp_bounded_standard_deviation,  {}, ALL_DIFFER),
         (dp_bounded_sum,  {}, ALL_DIFFER),
         (dp_bounded_variance,  {}, ALL_DIFFER),
