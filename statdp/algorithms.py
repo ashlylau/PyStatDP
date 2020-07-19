@@ -25,17 +25,6 @@ import numpy as np
 import pydp as dp
 
 
-def _hamming_distance(result1, result2):
-    # implement hamming distance in pure python, faster than np.count_zeros if inputs are plain python list
-    return sum(res1 != res2 for res1, res2 in zip_longest(result1, result2))
-
-
-def noisy_max_v1a(prng, queries, epsilon):
-    # find the largest noisy element and return its index
-    prng = np.random.default_rng()
-    return (np.asarray(queries, dtype=np.float64) + prng.laplace(scale=2.0 / epsilon, size=len(queries))).argmax()
-
-
 def dp_mean(prng, queries, epsilon):
     # PyDP mean
     x = dp.BoundedMean(epsilon, -15, 15)
@@ -62,7 +51,7 @@ def dp_bounded_variance(prng, queries, epsilon):
 
 
 def dp_median(prng, queries, epsilon):
-    x= dp.Median(epsilon)
+    x = dp.Median(epsilon)
     return x.result(queries, epsilon)
 
 
@@ -70,8 +59,8 @@ def dp_percentile(prng, queries, epsilon):
     return dp.Percentile(epsilon).result(queries, epsilon)
 
 
-
 def generic_method(prng, queries, epsilon, algorithm, param_for_algorithm: tuple(int))
+
 
 '''
     A generic method to route incoming tasks.
@@ -82,6 +71,17 @@ def generic_method(prng, queries, epsilon, algorithm, param_for_algorithm: tuple
     param param_to_algorithm (a tuple): inputs to the algortihm. 
     '''
 return algorithm(epsilon, *param_for_algorithm).result(queries, epsilon)
+
+
+def _hamming_distance(result1, result2):
+    # implement hamming distance in pure python, faster than np.count_zeros if inputs are plain python list
+    return sum(res1 != res2 for res1, res2 in zip_longest(result1, result2))
+
+
+def noisy_max_v1a(prng, queries, epsilon):
+    # find the largest noisy element and return its index
+    prng = np.random.default_rng()
+    return (np.asarray(queries, dtype=np.float64) + prng.laplace(scale=2.0 / epsilon, size=len(queries))).argmax()
 
 
 def noisy_max_v1b(prng, queries, epsilon):
