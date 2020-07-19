@@ -83,7 +83,7 @@ def detect_counterexample(algorithm, test_epsilon, default_kwargs=None, database
                                                  process_pool=pool)
             p = hypothesis_test(algorithm, d1, d2, kwargs, event, epsilon, detect_iterations, report_p2=False,
                                 process_pool=pool)
-            result.append((epsilon, float(p), d1, d2, kwargs, event))
+            result.append((epsilon, float(p), d1.tolist(), d2.tolist(), kwargs, event))
             if not quiet:
                 tqdm.tqdm.write(
                     f'Epsilon: {epsilon} | p-value: {p:5.3f} | Event: {event}')
