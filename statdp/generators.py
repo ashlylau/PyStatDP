@@ -20,8 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import logging
-import math
 import enum
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -65,26 +65,29 @@ def generate_databases(algorithm, num_input, default_kwargs, sensitivity=ALL_DIF
             'sensitivity must be statdp.ALL_DIFFER or statdp.ONE_DIFFER')
 
     # assume maximum distance is 1
-    d1 = [1 for _ in range(num_input)]
+    d1 = np.ones(num_input, dtype=int)
     candidates = [
-        (d1, [0] + [1 for _ in range(num_input - 1)]),  # one below
-        (d1, [2] + [1 for _ in range(num_input - 1)]),  # one above
+        (d1, np.concatenate((np.array([0]), d1[1:]), axis=0)),  # one below
+        (d1, np.concatenate((np.array([2]), d1[1:]), axis=0)),  # one above
     ]
 
     if sensitivity == ALL_DIFFER:
+        dzero = np.zeros(num_input, dtype=int)
+        dtwo = np.full(num_input, 2, dtype=int)
         candidates.extend([
             # one above rest below
-            (d1, [2] + [0 for _ in range(num_input - 1)]),
+            (d1, np.concatenate((np.array([2]), dzero[1:]), axis=0)),
             # one below rest above
-            (d1, [0] + [2 for _ in range(num_input - 1)]),
+            (d1, np.concatenate((np.array([0]), dtwo[1:]), axis=0)),
             # half half
-            (d1, [2 for _ in range(int(num_input / 2))] + \
-             [0 for _ in range(num_input - int(num_input / 2))]),
-            (d1, [2 for _ in range(num_input)]),  # all above
-            (d1, [0 for _ in range(num_input)]),  # all below
+            (d1, np.concatenate((dtwo[:int(num_input/2.0) + 1],\
+                                 dzero[:num_input - int(num_input / 2.0) + 1]), axis=0)),  # [0 for _ in range(num_input - int(num_input / 2))]),
+            (d1, dtwo),  # all above
+            (d1, dzero),  # all below
             # x shape
-            ([1 for _ in range(int(math.floor(num_input / 2.0)))] + [0 for _ in range(int(math.ceil(num_input / 2.0)))],
-             [0 for _ in range(int(math.floor(num_input / 2.0)))] + [1 for _ in range(int(math.ceil(num_input / 2.0)))])
+
+            (np.concatenate((d1[:int(np.floor(num_input / 2.0))+1], dzero[:int(np.ceil(num_input / 2.0))+1]), axis=0),
+             np.concatenate((dzero[:int(np.floor(num_input / 2.0))+1], d1[:int(np.ceil(num_input / 2.0))+1]), axis=0))
         ])
 
     return tuple((d1, d2, generate_arguments(algorithm, d1, d2, default_kwargs)) for d1, d2 in candidates)
