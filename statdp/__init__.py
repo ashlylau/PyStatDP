@@ -22,7 +22,7 @@
 import logging
 import multiprocessing as mp
 
-import tqdm
+from tqdm import tqdm
 
 from statdp.generators import generate_arguments, generate_databases, ALL_DIFFER, ONE_DIFFER
 from statdp.hypotest import hypothesis_test
@@ -77,7 +77,7 @@ def detect_counterexample(algorithm, test_epsilon, default_kwargs=None, database
         test_epsilon, (int, float)) else test_epsilon
 
     with mp.Pool(cores) as pool:
-        for _, epsilon in tqdm.tqdm(enumerate(test_epsilon), total=len(test_epsilon), unit='test', desc='Detection',
+        for _, epsilon in tqdm(enumerate(test_epsilon), total=len(test_epsilon), unit='test', desc='Detection',
                                     disable=quiet):
             d1, d2, kwargs, event = select_event(algorithm, input_list, epsilon, event_iterations, quiet=quiet,
                                                  process_pool=pool)
@@ -85,7 +85,7 @@ def detect_counterexample(algorithm, test_epsilon, default_kwargs=None, database
                                 process_pool=pool)
             result.append((epsilon, float(p), d1.tolist(), d2.tolist(), kwargs, event))
             if not quiet:
-                tqdm.tqdm.write(
+                tqdm.write(
                     f'Epsilon: {epsilon} | p-value: {p:5.3f} | Event: {event}')
             logger.debug(f'D1: {d1} | D2: {d2} | kwargs: {kwargs}')
 

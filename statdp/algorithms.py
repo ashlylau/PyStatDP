@@ -56,38 +56,38 @@ def generic_method(prng, queries, epsilon, algorithm, param_for_algorithm):
     return algorithm(epsilon, *param_for_algorithm).result(queries) # , epsilon)
 
 
-# def dp_mean(prng, queries, epsilon):
-#     # PyDP mean
-#     x = dp.BoundedMean(epsilon, -15, 15)
-#     return x.result(queries)
+def dp_mean(prng, queries, epsilon):
+    # PyDP mean
+    x = dp.BoundedMean(epsilon, -15, 15)
+    return x.result(queries)
 
 
-# def dp_max(prng, queries, epsilon):
-#     x = dp.Max(epsilon)
-#     return x.result(queries, epsilon)
+def dp_max(prng, queries, epsilon):
+    x = dp.Max(epsilon)
+    return x.result(queries, epsilon)
 
 
-# # dict to get all the parameters
-# def dp_bounded_standard_deviation(prng, queries, epsilon):
-#     # INCORRECT, issue with params
-#     return dp.BoundedStandardDeviation(epsilon, 0, 15).result(queries)
+# dict to get all the parameters
+def dp_bounded_standard_deviation(prng, queries, epsilon):
+    # INCORRECT, issue with params
+    return dp.BoundedStandardDeviation(epsilon, 0, 15).result(queries)
 
 
-# def dp_bounded_sum(prng, queries, epsilon):
-#     return dp.BoundedSum(epsilon, 0, 10).result(queries)
+def dp_bounded_sum(prng, queries, epsilon):
+    return dp.BoundedSum(epsilon, 0, 10).result(queries)
 
 
-# def dp_bounded_variance(prng, queries, epsilon):
-#     return dp.BoundedVariance(epsilon, 0, 16).result(queries)
+def dp_bounded_variance(prng, queries, epsilon):
+    return dp.BoundedVariance(epsilon, 0, 16).result(queries)
 
 
-# def dp_median(prng, queries, epsilon):
-#     x= dp.Median(epsilon)
-#     return x.result(queries, epsilon)
+def dp_median(prng, queries, epsilon):
+    x= dp.Median(epsilon)
+    return x.result(queries, epsilon)
 
 
-# def dp_percentile(prng, queries, epsilon):
-#     return dp.Percentile(epsilon).result(queries, epsilon)
+def dp_percentile(prng, queries, epsilon):
+    return dp.Percentile(epsilon).result(queries, epsilon)
 
 
 # def _hamming_distance(result1, result2):

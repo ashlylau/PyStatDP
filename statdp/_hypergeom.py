@@ -35,10 +35,10 @@ ACM Transactions on Mathematical Software (TOMS) 19.1 (1993): 33-43.
 """
 
 import math
-import logging
+from logging import getLogger
 import numba
 
-logger = logging.getLogger(__name__)
+logger = getLogger(__name__)
 
 
 @numba.njit(numba.float64(numba.int_, numba.int_))

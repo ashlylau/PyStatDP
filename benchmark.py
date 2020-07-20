@@ -27,8 +27,8 @@ import logging
 import matplotlib
 import matplotlib.pyplot as plt
 from statdp import detect_counterexample, ONE_DIFFER, ALL_DIFFER
-from statdp.algorithms import dp_mean, dp_max, dp_bounded_standard_deviation, \
-    dp_bounded_sum, dp_bounded_variance, dp_median, dp_percentile, dp_bounded_variance
+from statdp.algorithms import generic_method, dp_mean, dp_max, dp_bounded_standard_deviation, \
+    dp_bounded_sum, dp_bounded_variance, dp_median, dp_percentile, dp_bounded_variance1
 # noisy_max_v1a, noisy_max_v1b, noisy_max_v2a, noisy_max_v2b, SVT, iSVT1, iSVT2, iSVT3, iSVT4, histogram, histogram_eps,
 # switch matplotlib backend for running in background
 matplotlib.use('agg')
@@ -84,13 +84,14 @@ def plot_result(data, xlabel, ylabel, title, output_filename):
 def main():
     # list of tasks to test, each tuple contains (function, extra_args, sensitivity)
     tasks = [
-        #(dp_mean, {}, ALL_DIFFER), # works good, tested.
-        #(dp_max, {}, ALL_DIFFER), # works good, tested.
-        # works good, tested.(dp_bounded_standard_deviation,  {}, ALL_DIFFER),
-        # works good, tested.(dp_bounded_sum,  {}, ALL_DIFFER),
-        # works good, tested.(dp_bounded_variance,  {}, ALL_DIFFER),
+        # (generic_method, {}, ALL_DIFFER)
+        (dp_mean, {}, ALL_DIFFER),
+        (dp_max, {}, ALL_DIFFER),
+        (dp_bounded_standard_deviation,  {}, ALL_DIFFER),
+        (dp_bounded_sum,  {}, ALL_DIFFER),
+        (dp_bounded_variance,  {}, ALL_DIFFER),
         (dp_median,  {}, ALL_DIFFER),
-        (dp_percentile,  {}, ALL_DIFFER),
+        (dp_percentile,  {}, ALL_DIFFER), 
         # (noisy_max_v1a, {}, ALL_DIFFER),
         # (noisy_max_v1b, {}, ALL_DIFFER),
         # (noisy_max_v2a, {}, ALL_DIFFER),

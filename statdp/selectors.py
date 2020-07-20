@@ -19,16 +19,16 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import functools
-import logging
+from functools import partial
+from logging import getLogger
 
 import numpy as np
-import tqdm
+from tqdm import tqdm
 
 from statdp.hypotest import test_statistics
 from statdp.core import run_algorithm
 
-logger = logging.getLogger(__name__)
+logger = getLogger(__name__)
 
 
 def _evaluate_input(input_triplet, algorithm, iterations):
@@ -50,12 +50,12 @@ def select_event(algorithm, input_list, epsilon, iterations, process_pool, quiet
         raise ValueError('Algorithm must be callable')
 
     # fill in other arguments for _evaluate_input function, leaving out `input` to be filled
-    partial_evaluate_input = functools.partial(
+    partial_evaluate_input = partial(
         _evaluate_input, algorithm=algorithm, iterations=iterations)
 
     threshold = 0.001 * iterations * np.exp(epsilon)
 
-    event_evaluator = tqdm.tqdm(process_pool.imap_unordered(partial_evaluate_input, input_list),
+    event_evaluator = tqdm(process_pool.imap_unordered(partial_evaluate_input, input_list),
                                 desc='Finding best inputs/events', total=len(input_list), unit='input', leave=False,
                                 disable=quiet)
     # flatten the results for all input/event pairs
