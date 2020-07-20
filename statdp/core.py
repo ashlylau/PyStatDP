@@ -19,7 +19,6 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import math
 import itertools
 import logging
 import numpy as np
@@ -57,8 +56,10 @@ def run_algorithm(algorithm, d1, d2, kwargs, event, total_iterations):
     # iterations are very large, peak memory usage would kill the program, therefore we divide the
     if total_iterations > int(1e6):
         logger.debug('Iterations too large, divide into different pieces')
-        iteration_tuple = [int(1e6) for _ in range(math.floor(
-            total_iterations / 1e6))] + [total_iterations % int(1e6)]
+        iteration_tuple = np.concatenate((np.full(np.floor(total_iterations / 1e6), int(
+            1e6), dtype=int), np.array([total_iterations % int(1e6)])), axis=0)
+        # iteration_tuple = [int(1e6) for _ in range(np.floor(
+        #     total_iterations / 1e6))] + [total_iterations % int(1e6)]
     else:
         iteration_tuple = (total_iterations,)
     for iterations in iteration_tuple:

@@ -25,6 +25,35 @@ import numpy as np
 import pydp as dp
 
 
+def dp_mean(prng, queries, epsilon):
+    # PyDP mean
+    return dp.BoundedMean(epsilon, -15, 15).result(queries.tolist())
+
+
+def dp_max(prng, queries, epsilon):
+    return dp.Max(epsilon).result(queries.tolist(), epsilon)
+
+
+def dp_bounded_standard_deviation(prng, queries, epsilon):
+    return dp.BoundedStandardDeviation(epsilon, 0, 15).result(queries.tolist())
+
+
+def dp_bounded_sum(prng, queries, epsilon):
+    return dp.BoundedSum(epsilon, 0, 10).result(queries.tolist())
+
+
+def dp_bounded_variance(prng, queries, epsilon):
+    return dp.BoundedVariance(epsilon, 0, 16).result(queries.tolist())
+
+
+def dp_median(prng, queries, epsilon):
+    return dp.Median(epsilon).x.result(queries.tolist(), epsilon)
+
+
+def dp_percentile(prng, queries, epsilon):
+    return dp.Percentile(epsilon).result(queries.tolist(), epsilon)
+
+
 algo_dict = {
     'BoundedMean': 'example call with parameters: dp.BoundedMean(epsilon, -15, 15)',
     'Max': 'example call with parameters: dp.Max(epsilon)',
@@ -54,40 +83,6 @@ def generic_method(prng, queries, epsilon, algorithm, param_for_algorithm):
 
     print(algo_dict[str(algorithm)[13:-2]])
     return algorithm(epsilon, *param_for_algorithm).result(queries) # , epsilon)
-
-
-def dp_mean(prng, queries, epsilon):
-    # PyDP mean
-    x = dp.BoundedMean(epsilon, -15, 15)
-    return x.result(queries)
-
-
-def dp_max(prng, queries, epsilon):
-    x = dp.Max(epsilon)
-    return x.result(queries, epsilon)
-
-
-# dict to get all the parameters
-def dp_bounded_standard_deviation(prng, queries, epsilon):
-    # INCORRECT, issue with params
-    return dp.BoundedStandardDeviation(epsilon, 0, 15).result(queries)
-
-
-def dp_bounded_sum(prng, queries, epsilon):
-    return dp.BoundedSum(epsilon, 0, 10).result(queries)
-
-
-def dp_bounded_variance(prng, queries, epsilon):
-    return dp.BoundedVariance(epsilon, 0, 16).result(queries)
-
-
-def dp_median(prng, queries, epsilon):
-    x = dp.Median(epsilon)
-    return x.result(queries, epsilon)
-
-
-def dp_percentile(prng, queries, epsilon):
-    return dp.Percentile(epsilon).result(queries, epsilon)
 
 
 # def _hamming_distance(result1, result2):

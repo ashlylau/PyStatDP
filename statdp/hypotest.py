@@ -67,8 +67,9 @@ def hypothesis_test(algorithm, d1, d2, kwargs, event, epsilon, iterations, proce
     # may break in the future, therefore we fall back to mp.cpu_count() if it is not accessible
     core_count = process_pool._processes if process_pool._processes and isinstance(process_pool._processes, int) \
         else mp.cpu_count()
-    process_iterations = [
-        int(np.floor(float(iterations) / core_count)) for _ in range(core_count)]
+    process_iterations = np.full(core_count, int(
+        np.floor(float(iterations) / core_count)), dtype=int)
+    # process_iterations = [int(np.floor(float(iterations) / core_count)) for _ in range(core_count)]
     # add the remaining iterations to the last index
     process_iterations[core_count -
                        1] += iterations % process_iterations[core_count - 1]
