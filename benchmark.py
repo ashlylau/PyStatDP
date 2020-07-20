@@ -86,12 +86,12 @@ def main():
     tasks = [
         # (generic_method, {}, ALL_DIFFER)
         (dp_mean, {}, ALL_DIFFER),
-        # (dp_max, {}, ALL_DIFFER),
-        # (dp_bounded_standard_deviation,  {}, ALL_DIFFER),
-        # (dp_bounded_sum,  {}, ALL_DIFFER),
-        # (dp_bounded_variance,  {}, ALL_DIFFER),
-        # (dp_median,  {}, ALL_DIFFER),
-        # (dp_percentile,  {}, ALL_DIFFER), 
+        (dp_max, {}, ALL_DIFFER),
+        (dp_bounded_standard_deviation,  {}, ALL_DIFFER),
+        (dp_bounded_sum,  {}, ALL_DIFFER),
+        (dp_bounded_variance,  {}, ALL_DIFFER),
+        (dp_median,  {}, ALL_DIFFER),
+        (dp_percentile,  {}, ALL_DIFFER), 
         # (noisy_max_v1a, {}, ALL_DIFFER),
         # (noisy_max_v1b, {}, ALL_DIFFER),
         # (noisy_max_v2a, {}, ALL_DIFFER),
