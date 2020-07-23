@@ -47,7 +47,7 @@ def dp_bounded_variance(prng, queries, epsilon):
 
 
 def dp_median(prng, queries, epsilon):
-    return dp.Median(epsilon).x.result(queries.tolist(), epsilon)
+    return dp.Median(epsilon).result(queries.tolist(), epsilon)
 
 
 def dp_percentile(prng, queries, epsilon):
@@ -81,8 +81,8 @@ def generic_method(prng, queries, epsilon, algorithm, param_for_algorithm):
         0.0
     '''
 
-    print(algo_dict[str(algorithm)[13:-2]])
-    return algorithm(epsilon, *param_for_algorithm).result(queries) # , epsilon)
+    # print(algo_dict[str(algorithm)[13:-2]])
+    return algorithm(epsilon, *param_for_algorithm).result(queries.tolist()) # , epsilon)
 
 
 # def _hamming_distance(result1, result2):
