@@ -25,32 +25,32 @@ import numpy as np
 import pydp as dp
 
 
-def dp_mean(prng, queries, epsilon):
+def dp_mean(queries, epsilon):
     # PyDP mean
     return dp.BoundedMean(epsilon, -15, 15).result(queries.tolist())
 
 
-def dp_max(prng, queries, epsilon):
+def dp_max(queries, epsilon):
     return dp.Max(epsilon).result(queries.tolist(), epsilon)
 
 
-def dp_bounded_standard_deviation(prng, queries, epsilon):
+def dp_bounded_standard_deviation(queries, epsilon):
     return dp.BoundedStandardDeviation(epsilon, 0, 15).result(queries.tolist())
 
 
-def dp_bounded_sum(prng, queries, epsilon):
+def dp_bounded_sum(queries, epsilon):
     return dp.BoundedSum(epsilon, 0, 10).result(queries.tolist())
 
 
-def dp_bounded_variance(prng, queries, epsilon):
+def dp_bounded_variance(queries, epsilon):
     return dp.BoundedVariance(epsilon, 0, 16).result(queries.tolist())
 
 
-def dp_median(prng, queries, epsilon):
+def dp_median(queries, epsilon):
     return dp.Median(epsilon).x.result(queries.tolist(), epsilon)
 
 
-def dp_percentile(prng, queries, epsilon):
+def dp_percentile(queries, epsilon):
     return dp.Percentile(epsilon).result(queries.tolist(), epsilon)
 
 
@@ -65,7 +65,7 @@ algo_dict = {
 }
 
 
-def generic_method(prng, queries, epsilon, algorithm, param_for_algorithm):
+def generic_method(queries, epsilon, algorithm, param_for_algorithm):
     '''
     A generic method to route incoming tasks.
     param prng: Psuedo random number generator, ! to be removed.

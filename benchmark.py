@@ -21,6 +21,7 @@
 # SOFTWARE.
 import time
 import json
+from jsonpickle import encode
 from pathlib import Path
 import coloredlogs
 from logging import getLogger
@@ -86,12 +87,12 @@ def main():
     tasks = [
         # (generic_method, {}, ALL_DIFFER)
         (dp_mean, {}, ALL_DIFFER),
-        (dp_max, {}, ALL_DIFFER),
-        (dp_bounded_standard_deviation,  {}, ALL_DIFFER),
-        (dp_bounded_sum,  {}, ALL_DIFFER),
-        (dp_bounded_variance,  {}, ALL_DIFFER),
-        (dp_median,  {}, ALL_DIFFER),
-        (dp_percentile,  {}, ALL_DIFFER), 
+        # (dp_max, {}, ALL_DIFFER),
+        # (dp_bounded_standard_deviation,  {}, ALL_DIFFER),
+        # (dp_bounded_sum,  {}, ALL_DIFFER),
+        # (dp_bounded_variance,  {}, ALL_DIFFER),
+        # (dp_median,  {}, ALL_DIFFER),
+        # (dp_percentile,  {}, ALL_DIFFER), 
         # (noisy_max_v1a, {}, ALL_DIFFER),
         # (noisy_max_v1b, {}, ALL_DIFFER),
         # (noisy_max_v2a, {}, ALL_DIFFER),
@@ -116,7 +117,7 @@ def main():
         results = {}
         for privacy_budget in claimed_privacy:
             # set the third argument of the function (assumed to be `epsilon`) to the claimed privacy level
-            kwargs[algorithm.__code__.co_varnames[2]] = privacy_budget
+            kwargs[algorithm.__code__.co_varnames[1]] = privacy_budget
             results[privacy_budget] = detect_counterexample(
                 algorithm, test_privacy, kwargs, sensitivity=sensitivity)
 
@@ -128,7 +129,7 @@ def main():
             json_file.unlink()
 
         with json_file.open('w') as f:
-            json.dump(results, f)
+            json.dump(encode(results, unpicklable=False), f)
 
         # plot and save to file
         plot_file = Path.cwd() / f'{algorithm.__name__}.pdf'
