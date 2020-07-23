@@ -55,7 +55,7 @@ However, for the best performance we recommend installing `statdp` in a `conda` 
 conda create -n statdp anaconda python=3.8
 conda activate statdp
 # install dependencies from conda for best performance
-conda install numpy numba matplotlib sympy tqdm coloredlogs pip
+conda install numpy numba matplotlib sympy tqdm coloredlogs pip jsonpickle python-dp
 # install icc_rt compiler for best performance with numba, this requires using intel's channel
 conda install -c intel icc_rt
 # install the remaining non-conda dependencies and statdp 
