@@ -26,12 +26,7 @@ import pydp as dp
 
 
 def dp_mean(queries, epsilon):
-    # PyDP mean
     return dp.BoundedMean(epsilon, -15, 15).result(queries.tolist())
-
-
-def dp_max(queries, epsilon):
-    return dp.Max(epsilon).result(queries.tolist(), epsilon)
 
 
 def dp_bounded_standard_deviation(queries, epsilon):
@@ -46,6 +41,14 @@ def dp_bounded_variance(queries, epsilon):
     return dp.BoundedVariance(epsilon, 0, 16).result(queries.tolist())
 
 
+def dp_max(queries, epsilon):
+    return dp.Max(epsilon).result(queries.tolist(), epsilon)
+
+
+def dp_min(queries, epsilon):
+    return dp.Min(epsilon).result(queries.tolist(), epsilon)
+
+
 def dp_median(queries, epsilon):
     return dp.Median(epsilon).result(queries.tolist(), epsilon)
 
@@ -55,13 +58,18 @@ def dp_percentile(queries, epsilon):
 
 
 algo_dict = {
-    'BoundedMean': 'example call with parameters: dp.BoundedMean(epsilon, -15, 15)',
-    'Max': 'example call with parameters: dp.Max(epsilon)',
-    'BoundedStandardDeviation': 'example call with parameters: dp.BoundedStandardDeviation(epsilon, 0, 15)',
-    'BoundedSum': 'example call with parameters: dp.BoundedSum(epsilon, 0, 10)',
-    'BoundedVariance': 'example call with parameters: dp.BoundedVariance(epsilon, 0, 16)',
-    'Median': 'example call with parameters: dp.Median(epsilon)',
-    'Percentile': 'example call with parameters: dp.Percentile(epsilon)'
+    'bounded_functions': {
+        'BoundedMean': 'example call with parameters: dp.BoundedMean(epsilon, -15, 15)',
+        'BoundedStandardDeviation': 'example call with parameters: dp.BoundedStandardDeviation(epsilon, 0, 15)',
+        'BoundedSum': 'example call with parameters: dp.BoundedSum(epsilon, 0, 10)',
+        'BoundedVariance': 'example call with parameters: dp.BoundedVariance(epsilon, 0, 16)'
+    },
+    'order_statistics': {
+        'Max': 'example call with parameters: dp.Max(epsilon)',
+        'Min': 'example call with parameters: dp.Min(epsilon)',
+        'Median': 'example call with parameters: dp.Median(epsilon)',
+        'Percentile': 'example call with parameters: dp.Percentile(epsilon)'
+    }
 }
 
 
@@ -82,7 +90,10 @@ def generic_method(queries, epsilon, algorithm, param_for_algorithm):
     '''
 
     # print(algo_dict[str(algorithm)[13:-2]])
-    return algorithm(epsilon, *param_for_algorithm).result(queries.tolist()) # , epsilon)
+    if str(algorithm)[13:-2] in algo_dict['order_statistics'].keys():
+        return algorithm(epsilon, *param_for_algorithm).result(queries.tolist(), epsilon)
+    else:
+        return algorithm(epsilon, *param_for_algorithm).result(queries.tolist())
 
 
 # def _hamming_distance(result1, result2):
