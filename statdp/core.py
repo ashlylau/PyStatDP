@@ -50,7 +50,7 @@ def run_algorithm(algorithm, d1, d2, kwargs, event, total_iterations):
     # get return type by a sample run
     all_possible_events = None
     event_dict = {}
-    sample_result = algorithm(prng, d1, **kwargs)
+    sample_result = algorithm(d1, **kwargs)
 
     # since we need to store the output in intermediate variables (`result_d1` and `result_d2`), if the total
     # iterations are very large, peak memory usage would kill the program, therefore we divide the
@@ -64,9 +64,9 @@ def run_algorithm(algorithm, d1, d2, kwargs, event, total_iterations):
         iteration_tuple = (total_iterations,)
     for iterations in iteration_tuple:
         if np.issubdtype(type(sample_result), np.number):
-            result_d1 = (np.fromiter((algorithm(prng, d1, **kwargs) for _ in range(iterations)),
+            result_d1 = (np.fromiter((algorithm( d1, **kwargs) for _ in range(iterations)),
                                      dtype=type(sample_result), count=iterations),)
-            result_d2 = (np.fromiter((algorithm(prng, d2, **kwargs) for _ in range(iterations)),
+            result_d2 = (np.fromiter((algorithm( d2, **kwargs) for _ in range(iterations)),
                                      dtype=type(sample_result), count=iterations),)
         elif isinstance(sample_result, (tuple, list)):
             # create a list of numpy array, each containing the output from running

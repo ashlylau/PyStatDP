@@ -44,7 +44,7 @@ def generate_arguments(algorithm, d1, d2, default_kwargs):
     :return: Extra argument needed for the algorithm besides Q and epsilon.
     """
     arguments = algorithm.__code__.co_varnames[:algorithm.__code__.co_argcount]
-    if arguments[2] not in default_kwargs:
+    if arguments[1] not in default_kwargs:
         logger.error(
             f'The third argument {arguments[2]} (privacy budget) is not provided!')
         return None
