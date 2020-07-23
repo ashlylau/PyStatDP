@@ -47,7 +47,7 @@ def dp_bounded_variance(queries, epsilon):
 
 
 def dp_median(queries, epsilon):
-    return dp.Median(epsilon).x.result(queries.tolist(), epsilon)
+    return dp.Median(epsilon).result(queries.tolist(), epsilon)
 
 
 def dp_percentile(queries, epsilon):

@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from functools import partial
-from logging import getLogger
 import multiprocessing as mp
 
 import numpy as np
@@ -28,8 +27,6 @@ from numba import njit
 
 from statdp.core import run_algorithm
 import statdp._hypergeom as hypergeom
-
-logger = getLogger(__name__)
 
 
 @njit

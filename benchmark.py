@@ -27,9 +27,10 @@ import coloredlogs
 from logging import getLogger
 import matplotlib
 import matplotlib.pyplot as plt
+import pydp as dp
 from statdp import detect_counterexample, ONE_DIFFER, ALL_DIFFER
 from statdp.algorithms import dp_mean, dp_max, dp_bounded_standard_deviation, \
-    dp_bounded_sum, dp_bounded_variance, dp_median, dp_percentile, dp_bounded_variance #, generic_method 
+    dp_bounded_sum, dp_bounded_variance, dp_median, dp_percentile, dp_bounded_variance  # , generic_method
 # noisy_max_v1a, noisy_max_v1b, noisy_max_v2a, noisy_max_v2b, SVT, iSVT1, iSVT2, iSVT3, iSVT4, histogram, histogram_eps,
 # switch matplotlib backend for running in background
 matplotlib.use('agg')
@@ -85,14 +86,14 @@ def plot_result(data, xlabel, ylabel, title, output_filename):
 def main():
     # list of tasks to test, each tuple contains (function, extra_args, sensitivity)
     tasks = [
-        # (generic_method, {}, ALL_DIFFER)
+        # (generic_method, {'algorithm':dp.BoundedMean, 'param_for_algorithm':(-15,15)}, ALL_DIFFER)
         (dp_mean, {}, ALL_DIFFER),
-        # (dp_max, {}, ALL_DIFFER),
-        # (dp_bounded_standard_deviation,  {}, ALL_DIFFER),
-        # (dp_bounded_sum,  {}, ALL_DIFFER),
-        # (dp_bounded_variance,  {}, ALL_DIFFER),
-        # (dp_median,  {}, ALL_DIFFER),
-        # (dp_percentile,  {}, ALL_DIFFER), 
+        (dp_max, {}, ALL_DIFFER),
+        (dp_bounded_standard_deviation,  {}, ALL_DIFFER),
+        (dp_bounded_sum,  {}, ALL_DIFFER),
+        (dp_bounded_variance,  {}, ALL_DIFFER),
+        (dp_median,  {}, ALL_DIFFER),
+        (dp_percentile,  {}, ALL_DIFFER),
         # (noisy_max_v1a, {}, ALL_DIFFER),
         # (noisy_max_v1b, {}, ALL_DIFFER),
         # (noisy_max_v2a, {}, ALL_DIFFER),
@@ -108,6 +109,7 @@ def main():
 
     # claimed privacy level to check
     claimed_privacy = (0.2,)  # alter these values
+    # claimed_privacy = np.linspace(.1,.9,5)
 
     # privacy levels to test, here we test from a range of 0.1 - 1.0 with a stepping of 0.1
     test_privacy = tuple(x / 10.0 for x in range(1, 3, 1))
@@ -116,6 +118,8 @@ def main():
         start_time = time.time()
         results = {}
         for privacy_budget in claimed_privacy:
+            # privacy levels to test, here we test the claimed privacy plus .01 above and below
+            # test_privacy = (privacy_budget -.09, privacy_budget, privacy_budget + .09)
             # set the third argument of the function (assumed to be `epsilon`) to the claimed privacy level
             kwargs[algorithm.__code__.co_varnames[1]] = privacy_budget
             results[privacy_budget] = detect_counterexample(
