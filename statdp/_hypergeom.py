@@ -37,6 +37,7 @@ ACM Transactions on Mathematical Software (TOMS) 19.1 (1993): 33-43.
 import math
 from logging import getLogger
 import numba
+import numpy as np
 
 logger = getLogger(__name__)
 
@@ -104,6 +105,11 @@ def sf(k, M, n, N):
         for i in range(k + 1, N):
             pmf_i *= ((n - i) / (i + 1)) * ((N - i) / (M - n + i + 1 - N))
             result += pmf_i
+
+        # temp = np.arange(k+1, N)
+        # pmf_i = pmf_i * (((n-temp)/(temp+1))@((N-temp)/(M-n+temp+1-N)))
+        # result +=pmf_i
+
         return result
     else:
         pmf_i = pmf(k, M, n, N)
@@ -111,4 +117,9 @@ def sf(k, M, n, N):
         for i in range(k, 0, -1):
             pmf_i *= (i / (n - i + 1)) * ((M - n + i - N) / (N - i + 1))
             result += pmf_i
-        return 1 - result
+
+        # temp = np.arange(k, 0, -1)
+        # pmf_i = pmf_i * ((temp/(n-temp+1))@((M-n+temp-N)/(N-temp+1)))
+        # result+= pmf_i
+        
+        return 1-result

@@ -88,12 +88,12 @@ def main():
     tasks = [
         # (generic_method, {'algorithm': dp.BoundedMean, 'param_for_algorithm': (-15, 15)}, ALL_DIFFER)
         (dp_mean, {}, ALL_DIFFER),
-        (dp_max, {}, ALL_DIFFER),
-        (dp_bounded_standard_deviation,  {}, ALL_DIFFER),
-        (dp_bounded_sum,  {}, ALL_DIFFER),
-        (dp_bounded_variance,  {}, ALL_DIFFER),
-        (dp_median,  {}, ALL_DIFFER),
-        (dp_percentile,  {}, ALL_DIFFER), 
+        # (dp_max, {}, ALL_DIFFER),
+        # (dp_bounded_standard_deviation,  {}, ALL_DIFFER),
+        # (dp_bounded_sum,  {}, ALL_DIFFER),
+        # (dp_bounded_variance,  {}, ALL_DIFFER),
+        # (dp_median,  {}, ALL_DIFFER),
+        # (dp_percentile,  {}, ALL_DIFFER), 
         # (noisy_max_v1a, {}, ALL_DIFFER),
         # (noisy_max_v1b, {}, ALL_DIFFER),
         # (noisy_max_v2a, {}, ALL_DIFFER),
@@ -108,11 +108,12 @@ def main():
     ]
 
     # claimed privacy level to check
-    claimed_privacy = (0.2,)  # alter these values
+    claimed_privacy = (0.9,)  # alter these values
     # claimed_privacy = np.linspace(.1,.9,5)
 
     # privacy levels to test, here we test from a range of 0.1 - 1.0 with a stepping of 0.1
-    test_privacy = tuple(x / 10.0 for x in range(1, 3, 1))
+    # test_privacy = tuple(x / 10.0 for x in range(1, 3, 1))
+    test_privacy = tuple((0.9-0.09, 0.9, 0.9+0.09))
 
     for i, (algorithm, kwargs, sensitivity) in enumerate(tasks):
         start_time = time.time()

@@ -20,10 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import itertools
-import logging
+from logging import getLogger
 import numpy as np
 
-logger = logging.getLogger(__name__)
+logger = getLogger(__name__)
 
 
 def run_algorithm(algorithm, d1, d2, kwargs, event, total_iterations):
@@ -39,7 +39,6 @@ def run_algorithm(algorithm, d1, d2, kwargs, event, total_iterations):
     """
     if not callable(algorithm):
         raise ValueError('Algorithm must be callable')
-    prng = np.random.default_rng()
     # support multiple return values, each return value is stored as a row in result_d1 / result_d2
     # e.g if an algorithm returns (1, 1), result_d1 / result_d2 would be like
     # [
@@ -64,9 +63,9 @@ def run_algorithm(algorithm, d1, d2, kwargs, event, total_iterations):
         iteration_tuple = (total_iterations,)
     for iterations in iteration_tuple:
         if np.issubdtype(type(sample_result), np.number):
-            result_d1 = (np.fromiter((algorithm( d1, **kwargs) for _ in range(iterations)),
+            result_d1 = (np.fromiter((algorithm(d1, **kwargs) for _ in range(iterations)),
                                      dtype=type(sample_result), count=iterations),)
-            result_d2 = (np.fromiter((algorithm( d2, **kwargs) for _ in range(iterations)),
+            result_d2 = (np.fromiter((algorithm(d2, **kwargs) for _ in range(iterations)),
                                      dtype=type(sample_result), count=iterations),)
         elif isinstance(sample_result, (tuple, list)):
             # create a list of numpy array, each containing the output from running
@@ -76,8 +75,8 @@ def run_algorithm(algorithm, d1, d2, kwargs, event, total_iterations):
                                     range(len(sample_result))],
 
             for iteration_number in range(iterations):
-                out_1 = algorithm(prng, d1, **kwargs)
-                out_2 = algorithm(prng, d2, **kwargs)
+                out_1 = algorithm(d1, **kwargs)
+                out_2 = algorithm(d2, **kwargs)
                 for row, (value_1, value_2) in enumerate(zip(out_1, out_2)):
                     result_d1[row][iteration_number] = value_1
                     result_d2[row][iteration_number] = value_2
