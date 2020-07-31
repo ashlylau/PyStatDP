@@ -2,6 +2,15 @@
 This is a fork of [cmla-psu/statdp Statistical Counterexample Detector for Differential Privacy](https://github.com/cmla-psu/statdp) created to explore the possiblity of integrating it into the CI workfollow of projects with differentially private elements.
 
 ## Usage
+
+Use this shell commonad[WIP]
+```shell
+    python3 benchmark.py --mechanism BoundedMean --param_for_mechanism -15 15 --epsilon 0.5 0.9 1.5
+
+```
+
+
+
 We assume your algorithm implementation has the folllowing signature: `(prng, queries, epsilon, ...)` (Pseudo-random generator, list of queries, privacy budget and extra arguments).
 
 Throughout your algorithm, any random number must be generated through the provided generator (i.e., `prng`) for better scalability with multiple cores. It is an instance of [`numpy.random.Generator`](https://numpy.org/doc/stable/reference/random/generator.html) which supports a collection of standard distributions.     

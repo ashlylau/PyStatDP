@@ -19,6 +19,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import argparse
+from textwrap import dedent
 import time
 import json
 from jsonpickle import encode
@@ -83,18 +85,19 @@ def plot_result(data, xlabel, ylabel, title, output_filename):
     plt.gcf().clear()
 
 
-def main():
+def main(algo, param, epsilon):
     # list of tasks to test, each tuple contains (function, extra_args, sensitivity)
     tasks = [
-        # (generic_method, {'algorithm': dp.BoundedMean, 'param_for_algorithm': (-15, 15)}, ALL_DIFFER)
-        (dp_mean, {}, ALL_DIFFER),
-        (dp_bounded_standard_deviation,  {}, ALL_DIFFER),
-        (dp_bounded_sum,  {}, ALL_DIFFER),
-        (dp_bounded_variance,  {}, ALL_DIFFER),
-        (dp_max, {}, ALL_DIFFER),
-        (dp_min, {}, ALL_DIFFER),
-        (dp_median,  {}, ALL_DIFFER),
-        (dp_percentile,  {}, ALL_DIFFER), 
+        (generic_method, {'algorithm': algo,
+                          'param_for_algorithm': param}, ALL_DIFFER)
+        # (dp_mean, {}, ALL_DIFFER),
+        # (dp_bounded_standard_deviation,  {}, ALL_DIFFER),
+        # (dp_bounded_sum,  {}, ALL_DIFFER),
+        # (dp_bounded_variance,  {}, ALL_DIFFER),
+        # (dp_max, {}, ALL_DIFFER),
+        # (dp_min, {}, ALL_DIFFER),
+        # (dp_median,  {}, ALL_DIFFER),
+        # (dp_percentile,  {}, ALL_DIFFER),
         # (noisy_max_v1a, {}, ALL_DIFFER),
         # (noisy_max_v1b, {}, ALL_DIFFER),
         # (noisy_max_v2a, {}, ALL_DIFFER),
@@ -109,8 +112,9 @@ def main():
     ]
 
     # claimed privacy level to check
-    claimed_privacy = (0.9,)  # alter these values
+    # claimed_privacy = (0.9,)  # alter these values
     # claimed_privacy = np.linspace(.1,.9,5)
+    claimed_privacy = epsilon
 
     # privacy levels to test, here we test from a range of 0.1 - 1.0 with a stepping of 0.1
     # test_privacy = tuple(x / 10.0 for x in range(1, 3, 1))
@@ -154,4 +158,40 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(prog="benchmark.py", formatter_class=argparse.RawDescriptionHelpFormatter,
+                                     description=dedent('''\
+        Validation of differential privacy standards!
+        ---------------------------------------------
+            Currently supported PyDP mechanisms:
+            [Bounded Functions]
+                1. BoundedMean (eg: BoundedMean(epsilon, -15, 15))
+                2. BoundedStandardDeviation (eg: BoundedStandardDeviation(epsilon, 0, 15))
+                3. BoundedSum (eg: BoundedSum(epsilon, 0, 10))
+                4. BoundedVariance (eg: BoundedVariance(epsilon, 0, 16))
+            [Order Statistics]
+                1. Max (eg: Max(epsilon))
+                2. Min (eg: Min(epsilon))
+                3. Median (eg: Median(epsilon))
+                4. Percentile (eg: Percentile(epsilon))
+
+            ARGS:
+            ------------------------------------------
+                mechanism: algorithm to  validate
+                param_for_mechanism: a tuple, parameters to the algorithm to validate.
+                
+            OUTPUT:
+            ------------------------------------------
+                p-value: a probabilistic estimate of how unlikely it is that
+                    the null hypothesis(statistical hypothesis that we are trying to 
+                    disprove.) is true.
+         '''))
+    parser.add_argument('--mechanism', metavar='mechanism',
+                        help='a differential privacy mechanism')
+    parser.add_argument('--param_for_mechanism', metavar='param_for_mechanism', type=int, nargs=2,
+                        help='a tuple, parameters to the algorithm to validate.')
+    parser.add_argument('--epsilon', type=float,
+                        nargs='+', help='privacy budget')
+
+    args = parser.parse_args()
+    main(getattr(dp, args.mechanism), tuple(
+        args.param_for_mechanism), tuple(args.epsilon))

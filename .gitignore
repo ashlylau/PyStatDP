@@ -30,7 +30,7 @@ dist/
 
 # Python cache
 _pycache_/
-./statdp/__pycache__/
+/statdp/__pycache__/
 
 # Z3 library release files
 z3/
