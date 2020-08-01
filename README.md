@@ -3,9 +3,9 @@ This is a fork of [cmla-psu/statdp Statistical Counterexample Detector for Diffe
 
 ## Usage
 
-Use this shell commonad[WIP]
+Use a command like[WIP]
 ```shell
-    python3 benchmark.py --mechanism BoundedMean --param_for_mechanism -15 15 --epsilon 0.5 0.9 1.5
+    python3 benchmark.py --mechanism [mechanism] --param_for_mechanism [parameters ...] --epsilon [epsilon ...]
 
 ```
 
