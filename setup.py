@@ -5,33 +5,30 @@ with open('README.md', 'r', encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='statdp',
-    version='0.1',
+    name='PyStatDP',
+    version='0.0.1',
     description='Counterexample Detection Using Statistical Methods for Incorrect Differential-Privacy Algorithms.',
     long_description=long_description,
-    url='',
-    author='Zeyu Ding/Yuin Wang/Guanhong Wang/Danfeng Zhang/Daniel Kifer',
-    author_email='zyding@psu.edu,yxwang@psu.edu,gpw5092@psu.edu,zhang@cse.psu.edu,dkifer@cse.psu.edu',
+    url='https://github.com/OpenMined/PyStatDP',
+    author='',
+    author_email='',
     license='MIT',
     classifiers=[
-        'Development Status :: 3 - Alpha',
-        'Intended Audience :: Developers',
+        'Development Status ::  Alpha',
+        'Intended Audience :: Developers :: Researchers',
         'Topic :: Differential Privacy :: Statistics',
-        'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8'
+        'License :: OSI Approved :: MIT License'
     ],
     keywords='Differential Privacy, Hypothesis Test, Statistics',
     packages=find_packages(exclude=['tests']),
+    python_requires='>=3.5',
     install_requires=['numpy', 'tqdm', 'numba', 'jsonpickle', 'python-dp'],
     extras_require={
         'test': ['pytest-cov', 'pytest', 'coverage', 'flaky', 'scipy'],
     },
     entry_points={
         'console_scripts': [
-            'statdp=statdp.__main__:main',
+            'PyStatdp=statdp.__main__:main',
         ],
     },
 )
