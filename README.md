@@ -10,16 +10,13 @@ Use a command like[WIP]
 ```
 
 
-
-We assume your algorithm implementation has the folllowing signature: `(prng, queries, epsilon, ...)` (Pseudo-random generator, list of queries, privacy budget and extra arguments).
-
-Throughout your algorithm, any random number must be generated through the provided generator (i.e., `prng`) for better scalability with multiple cores. It is an instance of [`numpy.random.Generator`](https://numpy.org/doc/stable/reference/random/generator.html) which supports a collection of standard distributions.     
+We assume your algorithm implementation has the folllowing signature: `(queries, epsilon, ...)` (list of queries, privacy budget and extra arguments).  
 
 Then you can simply call the detection tool with automatic database generation and event selection:
 ```python
 from statdp import detect_counterexample
 
-def your_algorithm(prng, queries, epsilon, ...):
+def your_algorithm(queries, epsilon, ...):
     # your algorithm implementation here
     # prng must be used instead of np.random
     prng.laplace(loc=0, scale=1 / epsilon)

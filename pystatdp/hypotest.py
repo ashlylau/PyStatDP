@@ -25,8 +25,8 @@ import multiprocessing as mp
 import numpy as np
 from numba import njit
 
-from statdp.core import run_algorithm
-import statdp._hypergeom as hypergeom
+from pystatdp.core import run_algorithm
+import pystatdp._hypergeom as hypergeom
 
 
 @njit

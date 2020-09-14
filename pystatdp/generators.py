@@ -62,7 +62,7 @@ def generate_databases(algorithm, num_input, default_kwargs, sensitivity=ALL_DIF
     """
     if not isinstance(sensitivity, Sensitivity):
         raise ValueError(
-            'sensitivity must be statdp.ALL_DIFFER or statdp.ONE_DIFFER')
+            'sensitivity must be pystatdp.ALL_DIFFER or pystatdp.ONE_DIFFER')
 
     # assume maximum distance is 1
     d1 = np.ones(num_input, dtype=int)

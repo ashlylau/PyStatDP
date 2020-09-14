@@ -25,8 +25,8 @@ from logging import getLogger
 import numpy as np
 from tqdm import tqdm
 
-from statdp.hypotest import test_statistics
-from statdp.core import run_algorithm
+from pystatdp.hypotest import test_statistics
+from pystatdp.core import run_algorithm
 
 logger = getLogger(__name__)
 

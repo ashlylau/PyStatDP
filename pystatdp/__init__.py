@@ -24,9 +24,9 @@ import multiprocessing as mp
 
 from tqdm import tqdm
 
-from statdp.generators import generate_arguments, generate_databases, ALL_DIFFER, ONE_DIFFER
-from statdp.hypotest import hypothesis_test
-from statdp.selectors import select_event
+from pystatdp.generators import generate_arguments, generate_databases, ALL_DIFFER, ONE_DIFFER
+from pystatdp.hypotest import hypothesis_test
+from pystatdp.selectors import select_event
 
 logger = logging.getLogger(__name__)
 

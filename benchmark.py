@@ -30,8 +30,8 @@ from logging import getLogger
 import matplotlib
 import matplotlib.pyplot as plt
 import pydp as dp
-from statdp import detect_counterexample, ONE_DIFFER, ALL_DIFFER
-from statdp.algorithms import dp_mean, dp_bounded_standard_deviation, dp_bounded_sum, \
+from pystatdp import detect_counterexample, ONE_DIFFER, ALL_DIFFER
+from pystatdp.algorithms import dp_mean, dp_bounded_standard_deviation, dp_bounded_sum, \
     dp_bounded_variance, dp_max, dp_min, dp_median, dp_percentile, generic_method
 # noisy_max_v1a, noisy_max_v1b, noisy_max_v2a, noisy_max_v2b, SVT, iSVT1, iSVT2, iSVT3, iSVT4, histogram, histogram_eps,
 # switch matplotlib backend for running in background
@@ -97,18 +97,7 @@ def main(algo, param, epsilon):
         # (dp_max, {}, ALL_DIFFER),
         # (dp_min, {}, ALL_DIFFER),
         # (dp_median,  {}, ALL_DIFFER),
-        # (dp_percentile,  {}, ALL_DIFFER),
-        # (noisy_max_v1a, {}, ALL_DIFFER),
-        # (noisy_max_v1b, {}, ALL_DIFFER),
-        # (noisy_max_v2a, {}, ALL_DIFFER),
-        # (noisy_max_v2b, {}, ALL_DIFFER),
-        # (histogram, {}, ONE_DIFFER),
-        # (histogram_eps, {}, ONE_DIFFER),
-        # (SVT, {'N': 1, 'T': 0.5}, ALL_DIFFER),
-        # (iSVT1, {'T': 1, 'N': 1}, ALL_DIFFER),
-        # (iSVT2, {'T': 1, 'N': 1}, ALL_DIFFER),
-        # (iSVT3, {'T': 1, 'N': 1}, ALL_DIFFER),
-        # (iSVT4, {'T': 1, 'N': 1}, ALL_DIFFER)
+        # (dp_percentile,  {}, ALL_DIFFER)
     ]
 
     # claimed privacy level to check

@@ -30,8 +30,8 @@ import logging
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-from statdp import detect_counterexample, ONE_DIFFER, ALL_DIFFER
-from statdp.algorithms import dp_mean, dp_max, dp_bounded_standard_deviation, \
+from pystatdp import detect_counterexample, ONE_DIFFER, ALL_DIFFER
+from pystatdp.algorithms import dp_mean, dp_max, dp_bounded_standard_deviation, \
     dp_bounded_sum, dp_bounded_variance, dp_median, dp_percentile, dp_bounded_variance, \
     noisy_max_v1a, noisy_max_v1b, noisy_max_v2a, noisy_max_v2b, SVT, iSVT1, iSVT2, iSVT3, iSVT4, histogram, histogram_eps
 # switch matplotlib backend for running in background

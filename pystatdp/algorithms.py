@@ -76,13 +76,11 @@ algo_dict = {
 def generic_method(queries, epsilon, algorithm, param_for_algorithm):
     '''
     A generic method to route incoming tasks.
-    param prng: Psuedo random number generator, ! to be removed.
     param queries: queries to the algorithm
     param epsilon: privacy budget
     param algorithm: The algorithm to be tested; (e.g dp.BoundedMean, dp.BoundedSum)
     param param_to_algorithm (a tuple): inputs to the algortihm. 
 
-    prng = 2
     queries = [1,2,3,4,5]
     print(generic_method(prng, queries, 1.0, dp.BoundedMean, (-15,15)))
     >>> example call with parameters: dp.BoundedMean(epsilon, -15, 15)
@@ -91,7 +89,7 @@ def generic_method(queries, epsilon, algorithm, param_for_algorithm):
 
     # print(algo_dict[str(algorithm)[13:-2]])
     if str(algorithm)[13:-2] in algo_dict['order_statistics'].keys():
-        return algorithm(epsilon, *param_for_algorithm).result(queries.tolist(), epsilon)
+        return algorithm(epsilon).result(queries.tolist(), epsilon)
     else:
         return algorithm(epsilon, *param_for_algorithm).result(queries.tolist())
 
