@@ -3,28 +3,21 @@ This is a fork of [cmla-psu/statdp Statistical Counterexample Detector for Diffe
 
 ## Usage
 
-Use a command like[WIP]
-```shell
-    python3 benchmark.py --mechanism [mechanism] --param_for_mechanism [parameters ...] --epsilon [epsilon ...]
-
-```
-
-
 We assume your algorithm implementation has the folllowing signature: `(queries, epsilon, ...)` (list of queries, privacy budget and extra arguments).  
 
 Then you can simply call the detection tool with automatic database generation and event selection:
 ```python
-from statdp import detect_counterexample
+from pystatdp import pystatdp
+
+pystatdp = pystatdp
 
 def your_algorithm(queries, epsilon, ...):
     # your algorithm implementation here
-    # prng must be used instead of np.random
-    prng.laplace(loc=0, scale=1 / epsilon)
- 
+
 if __name__ == '__main__':
     # algorithm privacy budget argument(`epsilon`) is needed
     # otherwise detector won't work properly since it will try to generate a privacy budget
-    result = detect_counterexample(your_algorithm, {'epsilon': privacy_budget}, test_epsilon)
+    result = pystatdp(your_algorithm, (param_for_algorithm, [param_for_algorithm]) : tuple, (epsilon, [epsilon]): tuple)
 ```
 
 The result is returned in variable `result`, which is stored as `[(epsilon, p, d1, d2, kwargs, event), (...)]`. 
