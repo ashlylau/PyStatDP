@@ -9,7 +9,7 @@ Then you can simply call the detection tool with automatic database generation a
 ```python
 from pystatdp import pystatdp
 
-pystatdp = pystatdp
+pystatdp = pystatdp()
 
 #Currently, only mechanisms with the class and call structure of PyDP[https://github.com/openmined/PyDP] are supported. 
 # All mechanisms of PyDP are supported. 
@@ -19,7 +19,7 @@ def your_algorithm(queries, epsilon, ...):
 if __name__ == '__main__':
     # algorithm privacy budget argument(`epsilon`) is needed
     # otherwise detector won't work properly since it will try to generate a privacy budget
-    result = pystatdp(your_algorithm, (param_for_algorithm, [param_for_algorithm]) : tuple, (epsilon, [epsilon]): tuple)
+    result = pystatdp.main(your_algorithm, (param_for_algorithm, [param_for_algorithm]) : tuple, (epsilon, [epsilon]): tuple)
 ```
 
 The result is returned in variable `result`, which is stored as `[(epsilon, p, d1, d2, kwargs, event), (...)]`. 
@@ -68,7 +68,7 @@ A nice python library `matplotlib` is recommended for visualizing your result.
 
 There's a python code snippet within class `pystatdp`(`plot_result` method) to show an example of plotting the results.
 
-Then you can generate a figure like the BoundedMean method of PyDP. (see at: https://github.com/OpenMined/PyStatDP/blob/generic-feature/examples/generic_method.pdf)
+Then you can generate a figure like the BoundedMean method of PyDP. (see at: https://github.com/OpenMined/PyStatDP/blob/master/examples/generic_method.pdf)
 ![iSVT4](https://raw.githubusercontent.com/yxwangcs/StatDP/master/examples/iSVT4.svg?sanitize=true)
 
 ## Customizing the detection
