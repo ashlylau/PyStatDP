@@ -19,21 +19,17 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import functools
-import logging
-import math
+from functools import partial
 import multiprocessing as mp
 
 import numpy as np
-import numba
+from numba import njit
 
-from statdp.core import run_algorithm
-import statdp._hypergeom as hypergeom
-
-logger = logging.getLogger(__name__)
+from pystatdp.core import run_algorithm
+import pystatdp._hypergeom as hypergeom
 
 
-@numba.njit
+@njit
 def test_statistics(cx, cy, epsilon, iterations):
     """ Calculate p-value based on observed results.
     :param cx: The observed count of running algorithm with database 1 that falls into the event
@@ -46,7 +42,8 @@ def test_statistics(cx, cy, epsilon, iterations):
     sample_num = 200
     p_value = 0
     for new_cx in np.random.binomial(cx, 1.0 / (np.exp(epsilon)), sample_num):
-        p_value += hypergeom.sf(new_cx - 1, 2 * iterations, iterations, new_cx + cy)
+        p_value += hypergeom.sf(new_cx - 1, 2 * iterations,
+                                iterations, new_cx + cy)
     return p_value / sample_num
 
 
@@ -67,14 +64,17 @@ def hypothesis_test(algorithm, d1, d2, kwargs, event, epsilon, iterations, proce
     # may break in the future, therefore we fall back to mp.cpu_count() if it is not accessible
     core_count = process_pool._processes if process_pool._processes and isinstance(process_pool._processes, int) \
         else mp.cpu_count()
-    process_iterations = [int(math.floor(float(iterations) / core_count)) for _ in range(core_count)]
+    process_iterations = np.full(core_count, int(
+        np.floor(float(iterations) / core_count)), dtype=int)
+    # process_iterations = [int(np.floor(float(iterations) / core_count)) for _ in range(core_count)]
     # add the remaining iterations to the last index
-    process_iterations[core_count - 1] += iterations % process_iterations[core_count - 1]
+    process_iterations[core_count -
+                       1] += iterations % process_iterations[core_count - 1]
 
     # start the pool to run the algorithm and collects the statistics
     cx, cy = 0, 0
     # fill in other arguments for running the algorithm, leaving `iterations` to be filled
-    runner = functools.partial(run_algorithm, algorithm, d1, d2, kwargs, event)
+    runner = partial(run_algorithm, algorithm, d1, d2, kwargs, event)
     for ((local_cx, local_cy), *_), _ in process_pool.imap_unordered(runner, process_iterations):
         cx += local_cx
         cy += local_cy

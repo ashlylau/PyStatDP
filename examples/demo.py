@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2019-2020 Yuxin Wang
+# Copyright (c) 2018 Yuxin Wang
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -19,13 +19,10 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-FROM continuumio/miniconda3
 
-# copy statdp into the image
-COPY . /statdp
-WORKDIR /statdp
+from pystatdp import pystatdp
+import pydp as dp
 
-# install dependencies from conda for best performance
-RUN conda install --yes numpy scipy matplotlib sympy tqdm numba coloredlogs jsonpickle pip && conda install --yes -c intel icc_rt && conda clean --all
-# install the remaining non-conda dependencies and statdp
-RUN pip install --no-cache-dir .
+psd= pystatdp()
+
+psd.main(dp.BoundedMean, tuple((-15,15)), tuple((0.9,)))

@@ -19,11 +19,11 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import logging
-import math
 import enum
+import numpy as np
+from logging import getLogger
 
-logger = logging.getLogger(__name__)
+logger = getLogger(__name__)
 
 
 class Sensitivity(enum.Enum):
@@ -44,8 +44,9 @@ def generate_arguments(algorithm, d1, d2, default_kwargs):
     :return: Extra argument needed for the algorithm besides Q and epsilon.
     """
     arguments = algorithm.__code__.co_varnames[:algorithm.__code__.co_argcount]
-    if arguments[2] not in default_kwargs:
-        logger.error(f'The third argument {arguments[2]} (privacy budget) is not provided!')
+    if arguments[1] not in default_kwargs:
+        logger.error(
+            f'The third argument {arguments[2]} (privacy budget) is not provided!')
         return None
 
     return default_kwargs
@@ -60,26 +61,34 @@ def generate_databases(algorithm, num_input, default_kwargs, sensitivity=ALL_DIF
     :return: List of (d1, d2, args) with length num_input
     """
     if not isinstance(sensitivity, Sensitivity):
-        raise ValueError('sensitivity must be statdp.ALL_DIFFER or statdp.ONE_DIFFER')
+        raise ValueError(
+            'sensitivity must be pystatdp.ALL_DIFFER or pystatdp.ONE_DIFFER')
 
     # assume maximum distance is 1
-    d1 = [1 for _ in range(num_input)]
+    d1 = np.ones(num_input, dtype=int)
     candidates = [
-        (d1, [0] + [1 for _ in range(num_input - 1)]),  # one below
-        (d1, [2] + [1 for _ in range(num_input - 1)]),  # one above
+        (d1, np.concatenate((np.array([0]), d1[1:]), axis=0)),  # one below
+        (d1, np.concatenate((np.array([2]), d1[1:]), axis=0)),  # one above
     ]
 
     if sensitivity == ALL_DIFFER:
+        dzero = np.zeros(num_input, dtype=int)
+        dtwo = np.full(num_input, 2, dtype=int)
         candidates.extend([
-            (d1, [2] + [0 for _ in range(num_input - 1)]),  # one above rest below
-            (d1, [0] + [2 for _ in range(num_input - 1)]),  # one below rest above
+            # one above rest below
+            (d1, np.concatenate((np.array([2]), dzero[1:]), axis=0)),
+            # one below rest above
+            (d1, np.concatenate((np.array([0]), dtwo[1:]), axis=0)),
             # half half
-            (d1, [2 for _ in range(int(num_input / 2))] + [0 for _ in range(num_input - int(num_input / 2))]),
-            (d1, [2 for _ in range(num_input)]),  # all above
-            (d1, [0 for _ in range(num_input)]),  # all below
+            (d1, np.concatenate((dtwo[:int(num_input/2.0) + 1],\
+                                 dzero[:num_input - int(num_input / 2.0) + 1]), axis=0)),  # [0 for _ in range(num_input - int(num_input / 2))]),
+            # all above
+            (d1, dtwo),  
+            # all below
+            (d1, dzero),  
             # x shape
-            ([1 for _ in range(int(math.floor(num_input / 2.0)))] + [0 for _ in range(int(math.ceil(num_input / 2.0)))],
-             [0 for _ in range(int(math.floor(num_input / 2.0)))] + [1 for _ in range(int(math.ceil(num_input / 2.0)))])
+            (np.concatenate((d1[:int(np.floor(num_input / 2.0))+1], dzero[:int(np.ceil(num_input / 2.0))+1]), axis=0),
+             np.concatenate((dzero[:int(np.floor(num_input / 2.0))+1], d1[:int(np.ceil(num_input / 2.0))+1]), axis=0))
         ])
 
     return tuple((d1, d2, generate_arguments(algorithm, d1, d2, default_kwargs)) for d1, d2 in candidates)

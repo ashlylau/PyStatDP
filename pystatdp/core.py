@@ -19,12 +19,11 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import math
 import itertools
-import logging
+from logging import getLogger
 import numpy as np
 
-logger = logging.getLogger(__name__)
+logger = getLogger(__name__)
 
 
 def run_algorithm(algorithm, d1, d2, kwargs, event, total_iterations):
@@ -40,7 +39,6 @@ def run_algorithm(algorithm, d1, d2, kwargs, event, total_iterations):
     """
     if not callable(algorithm):
         raise ValueError('Algorithm must be callable')
-    prng = np.random.default_rng()
     # support multiple return values, each return value is stored as a row in result_d1 / result_d2
     # e.g if an algorithm returns (1, 1), result_d1 / result_d2 would be like
     # [
@@ -51,20 +49,23 @@ def run_algorithm(algorithm, d1, d2, kwargs, event, total_iterations):
     # get return type by a sample run
     all_possible_events = None
     event_dict = {}
-    sample_result = algorithm(prng, d1, **kwargs)
+    sample_result = algorithm(d1, **kwargs)
 
     # since we need to store the output in intermediate variables (`result_d1` and `result_d2`), if the total
     # iterations are very large, peak memory usage would kill the program, therefore we divide the
     if total_iterations > int(1e6):
         logger.debug('Iterations too large, divide into different pieces')
-        iteration_tuple = [int(1e6) for _ in range(math.floor(total_iterations / 1e6))] + [total_iterations % int(1e6)]
+        iteration_tuple = np.concatenate((np.full(np.floor(total_iterations / 1e6), int(
+            1e6), dtype=int), np.array([total_iterations % int(1e6)])), axis=0)
+        # iteration_tuple = [int(1e6) for _ in range(np.floor(
+        #     total_iterations / 1e6))] + [total_iterations % int(1e6)]
     else:
         iteration_tuple = (total_iterations,)
     for iterations in iteration_tuple:
         if np.issubdtype(type(sample_result), np.number):
-            result_d1 = (np.fromiter((algorithm(prng, d1, **kwargs) for _ in range(iterations)),
+            result_d1 = (np.fromiter((algorithm(d1, **kwargs) for _ in range(iterations)),
                                      dtype=type(sample_result), count=iterations),)
-            result_d2 = (np.fromiter((algorithm(prng, d2, **kwargs) for _ in range(iterations)),
+            result_d2 = (np.fromiter((algorithm(d2, **kwargs) for _ in range(iterations)),
                                      dtype=type(sample_result), count=iterations),)
         elif isinstance(sample_result, (tuple, list)):
             # create a list of numpy array, each containing the output from running
@@ -74,8 +75,8 @@ def run_algorithm(algorithm, d1, d2, kwargs, event, total_iterations):
                                     range(len(sample_result))],
 
             for iteration_number in range(iterations):
-                out_1 = algorithm(prng, d1, **kwargs)
-                out_2 = algorithm(prng, d2, **kwargs)
+                out_1 = algorithm(d1, **kwargs)
+                out_2 = algorithm(d2, **kwargs)
                 for row, (value_1, value_2) in enumerate(zip(out_1, out_2)):
                     result_d1[row][iteration_number] = value_1
                     result_d2[row][iteration_number] = value_2
@@ -89,12 +90,14 @@ def run_algorithm(algorithm, d1, d2, kwargs, event, total_iterations):
             if event is None:
                 for row in range(len(result_d1)):
                     # determine the event search space based on the return type
-                    combined_result = np.concatenate((result_d1[row], result_d2[row]))
+                    combined_result = np.concatenate(
+                        (result_d1[row], result_d2[row]))
                     unique = np.unique(combined_result)
 
                     # categorical output
                     if len(unique) < iterations * 0.002:
-                        event_search_space.append(tuple(int(key) for key in unique))
+                        event_search_space.append(
+                            tuple(int(key) for key in unique))
                     else:
                         combined_result.sort()
                         # find the densest 70% range
@@ -107,24 +110,30 @@ def run_algorithm(algorithm, d1, d2, kwargs, event, total_iterations):
                             tuple((-float('inf'), float(alpha)) for alpha in
                                   np.linspace(combined_result[search_min], combined_result[search_max], num=10)))
 
-                logger.debug(f"search space is set to {' × '.join(str(event) for event in event_search_space)}")
+                logger.debug(
+                    f"search space is set to {' × '.join(str(event) for event in event_search_space)}")
             else:
                 # if `event` is given, it should have the corresponding events for each return value
                 if len(event) != len(result_d1):
-                    raise ValueError('Given event should have the same dimension as return value.')
+                    raise ValueError(
+                        'Given event should have the same dimension as return value.')
                 # here if the event is given, we carefully construct the search space in the following format:
                 # [first_event] × [second_event] × [third_event] × ... × [last_event]
                 # so that when the search begins, only one possible combination can happen which is the given event
-                event_search_space = ((separate_event,) for separate_event in event)
+                event_search_space = ((separate_event,)
+                                      for separate_event in event)
             all_possible_events = tuple(itertools.product(*event_search_space))
 
         for event in all_possible_events:
-            cx_check, cy_check = np.full(iterations, True, dtype=np.bool), np.full(iterations, True, dtype=np.bool)
+            cx_check, cy_check = np.full(iterations, True, dtype=np.bool), np.full(
+                iterations, True, dtype=np.bool)
             # check for all events in the return values
             for row in range(len(result_d1)):
                 if np.issubdtype(type(event[row]), np.number):
-                    cx_check = np.logical_and(cx_check, result_d1[row] == event[row])
-                    cy_check = np.logical_and(cy_check, result_d2[row] == event[row])
+                    cx_check = np.logical_and(
+                        cx_check, result_d1[row] == event[row])
+                    cy_check = np.logical_and(
+                        cy_check, result_d2[row] == event[row])
                 else:
                     cx_check = np.logical_and(cx_check, np.logical_and(result_d1[row] > event[row][0],
                                                                        result_d1[row] < event[row][1]))

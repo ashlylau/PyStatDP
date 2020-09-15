@@ -19,16 +19,16 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import functools
-import logging
+from functools import partial
+from logging import getLogger
 
 import numpy as np
-import tqdm
+from tqdm import tqdm
 
-from statdp.hypotest import test_statistics
-from statdp.core import run_algorithm
+from pystatdp.hypotest import test_statistics
+from pystatdp.core import run_algorithm
 
-logger = logging.getLogger(__name__)
+logger = getLogger(__name__)
 
 
 def _evaluate_input(input_triplet, algorithm, iterations):
@@ -50,11 +50,12 @@ def select_event(algorithm, input_list, epsilon, iterations, process_pool, quiet
         raise ValueError('Algorithm must be callable')
 
     # fill in other arguments for _evaluate_input function, leaving out `input` to be filled
-    partial_evaluate_input = functools.partial(_evaluate_input, algorithm=algorithm, iterations=iterations)
+    partial_evaluate_input = partial(
+        _evaluate_input, algorithm=algorithm, iterations=iterations)
 
     threshold = 0.001 * iterations * np.exp(epsilon)
 
-    event_evaluator = tqdm.tqdm(process_pool.imap_unordered(partial_evaluate_input, input_list),
+    event_evaluator = tqdm(process_pool.imap_unordered(partial_evaluate_input, input_list),
                                 desc='Finding best inputs/events', total=len(input_list), unit='input', leave=False,
                                 disable=quiet)
     # flatten the results for all input/event pairs
@@ -66,7 +67,8 @@ def select_event(algorithm, input_list, epsilon, iterations, process_pool, quiet
 
         # calculate p-values based on counts
         for (cx, cy) in local_counts:
-            p_values.append(test_statistics(cx, cy, epsilon, iterations) if cx + cy > threshold else float('inf'))
+            p_values.append(test_statistics(cx, cy, epsilon, iterations)
+                            if cx + cy > threshold else float('inf'))
 
     # log the information for debug purposes
     for ((d1, d2, kwargs, event), (cx, cy), p) in zip(input_event_pairs, counts, p_values):

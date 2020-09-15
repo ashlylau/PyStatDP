@@ -35,10 +35,11 @@ ACM Transactions on Mathematical Software (TOMS) 19.1 (1993): 33-43.
 """
 
 import math
-import logging
+from logging import getLogger
 import numba
+import numpy as np
 
-logger = logging.getLogger(__name__)
+logger = getLogger(__name__)
 
 
 @numba.njit(numba.float64(numba.int_, numba.int_))
@@ -82,7 +83,8 @@ def sf(k, M, n, N):
     :return: the cumulative density for given parameter
     """
     if N > M:
-        raise ValueError('The number of draws (N) is larger than the total number of objects (M)')
+        raise ValueError(
+            'The number of draws (N) is larger than the total number of objects (M)')
     if k >= min(n, N):
         return 0
     elif k < 0:
@@ -103,6 +105,11 @@ def sf(k, M, n, N):
         for i in range(k + 1, N):
             pmf_i *= ((n - i) / (i + 1)) * ((N - i) / (M - n + i + 1 - N))
             result += pmf_i
+
+        # temp = np.arange(k+1, N)
+        # pmf_i = pmf_i * (((n-temp)/(temp+1))@((N-temp)/(M-n+temp+1-N)))
+        # result +=pmf_i
+
         return result
     else:
         pmf_i = pmf(k, M, n, N)
@@ -110,4 +117,9 @@ def sf(k, M, n, N):
         for i in range(k, 0, -1):
             pmf_i *= (i / (n - i + 1)) * ((M - n + i - N) / (N - i + 1))
             result += pmf_i
-        return 1 - result
+
+        # temp = np.arange(k, 0, -1)
+        # pmf_i = pmf_i * ((temp/(n-temp+1))@((M-n+temp-N)/(N-temp+1)))
+        # result+= pmf_i
+        
+        return 1-result
