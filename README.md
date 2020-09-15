@@ -11,6 +11,8 @@ from pystatdp import pystatdp
 
 pystatdp = pystatdp
 
+#Currently, only mechanisms with the class and call structure of PyDP[https://github.com/openmined/PyDP] are supported. 
+# All mechanisms of PyDP are supported. 
 def your_algorithm(queries, epsilon, ...):
     # your algorithm implementation here
 
@@ -45,30 +47,28 @@ def detect_counterexample(algorithm, test_epsilon, default_kwargs=None, database
 ```
 
 ## Install
-We do provide a docker container for experiment, use `docker pull cmlapsu/statdp` to pull the container with anaconda built in, then run `docker run --rm -it cmlapsu/statdp`. 
-
-However, for the best performance we recommend installing `statdp` in a `conda` virtual environment (or `venv` if you prefer, the setup is similar):
+For the best performance we recommend installing `pystatdp` in a `conda` virtual environment (or `venv` if you prefer, the setup is similar):
 
 ```bash
 # we use python 3.8, but 3.6 and above should work fine
-conda create -n statdp anaconda python=3.8
-conda activate statdp
+conda create -n pystatdp anaconda python=3.8
+conda activate pystatdp
 # install dependencies from conda for best performance
-conda install numpy numba matplotlib sympy tqdm coloredlogs pip
+conda install numpy numba matplotlib sympy tqdm coloredlogs jsonpickle pip
 # install icc_rt compiler for best performance with numba, this requires using intel's channel
 conda install -c intel icc_rt
-# install the remaining non-conda dependencies and statdp 
+# install the remaining non-conda dependencies and pystatdp 
 pip install .
 ```
-Then you can run `examples/benchmark.py` to run the experiments we conducted in the paper.
+Then you can run `examples/benchmark.py` to run the experiments we conducted.
 
 
 ## Visualizing the results
 A nice python library `matplotlib` is recommended for visualizing your result. 
 
-There's a python code snippet at `/examples/benchmark.py`(`plot_result` method) to show an example of plotting the results.
+There's a python code snippet within class `pystatdp`(`plot_result` method) to show an example of plotting the results.
 
-Then you can generate a figure like the iSVT 4 in our paper.
+Then you can generate a figure like the BoundedMean method of PyDP. (see at: https://github.com/OpenMined/PyStatDP/blob/generic-feature/examples/generic_method.pdf)
 ![iSVT4](https://raw.githubusercontent.com/yxwangcs/StatDP/master/examples/iSVT4.svg?sanitize=true)
 
 ## Customizing the detection
@@ -78,7 +78,7 @@ In general the detection process is
 
 `test_epsilon --> generate_databases --((d1, d2, kwargs), ...), epsilon--> select_event --(d1, d2, kwargs, event), epsilon--> hypothesis_test --> (d1, d2, kwargs, event, p-value), epsilon`
  
-You can checkout the definition and docstrings of the functions respectively to define your own generator/selector. Basically the `detect_counterexample` function in `statdp.core` module is just shortcut function to take care of the above process for you.
+You can checkout the definition and docstrings of the functions respectively to define your own generator/selector. Basically the `detect_counterexample` function in `pystatdp.core` module is just shortcut function to take care of the above process for you.
 
 `test_statistics` function in `hypotest` module can be used universally by all algorithms (this function is to calculate p-value based on the observed statistics). However, you may need to design your own generator or selector for your own algorithm, since our input generator and event selector are designed to work with numerical queries on databases.
 

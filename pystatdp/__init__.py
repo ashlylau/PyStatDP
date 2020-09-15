@@ -35,8 +35,7 @@ from tqdm import tqdm
 from pystatdp.generators import generate_arguments, generate_databases, ALL_DIFFER, ONE_DIFFER
 from pystatdp.hypotest import hypothesis_test
 from pystatdp.selectors import select_event
-from pystatdp.algorithms import generic_method  #, dp_mean, dp_bounded_standard_deviation, dp_bounded_sum, \
-            # dp_bounded_variance, dp_max, dp_min, dp_median, dp_percentile
+from pystatdp.algorithms import generic_method
 
 logger = logging.getLogger(__name__)
 
@@ -160,34 +159,29 @@ class pystatdp:
         ]
 
         # claimed privacy level to check
-        # claimed_privacy = (0.9,)  # alter these values
-        # claimed_privacy = np.linspace(.1,.9,5)
         claimed_privacy = epsilon
-
-        # privacy levels to test, here we test from a range of 0.1 - 1.0 with a stepping of 0.1
-        # test_privacy = tuple(x / 10.0 for x in range(1, 3, 1))
-        # test_privacy = tuple((0.9-0.09, 0.9, 0.9+0.09))
 
         for i, (algorithm, kwargs, sensitivity) in enumerate(tasks):
             start_time = time.time()
             results = {}
-            flagfile = time.ctime().replace(' ', '_')
+            flag_file = time.ctime().replace(' ', '_')
             for privacy_budget in claimed_privacy:
                 # # privacy levels to test, here we test the claimed privacy plus .01 above and below
-                test_privacy = (privacy_budget -.09, privacy_budget, privacy_budget + .09)
-                # set the third argument of the function (assumed to be `epsilon`) to the claimed privacy level
+                test_privacy = (privacy_budget - .09,
+                                privacy_budget, privacy_budget + .09)
+                # set the second argument of the function (assumed to be `epsilon`) to the claimed privacy level
                 kwargs[algorithm.__code__.co_varnames[1]] = privacy_budget
                 results[privacy_budget] = self.detect_counterexample(
                     algorithm, test_privacy, kwargs, sensitivity=sensitivity)
 
             # dump the results to file
-            json_file = Path.cwd() / f'{algorithm.__name__}_{flagfile}.json'
+            json_file = Path.cwd() / f'{algorithm.__name__}_{flag_file}.json'
 
             with json_file.open('w') as f:
                 json.dump(encode(results, unpicklable=False), f)
 
             # plot and save to file
-            plot_file = Path.cwd() / f'{algorithm.__name__}_{flagfile}.pdf'
+            plot_file = Path.cwd() / f'{algorithm.__name__}_{flag_file}.pdf'
 
             self.plot_result(results, r'Test $\epsilon$', 'P Value',
                              algorithm.__name__.replace('_', ' ').title(), plot_file)

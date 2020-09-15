@@ -19,43 +19,6 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from itertools import zip_longest
-
-import numpy as np
-import pydp as dp
-
-
-def dp_mean(queries, epsilon):
-    return dp.BoundedMean(epsilon, -15, 15).result(queries.tolist())
-
-
-def dp_bounded_standard_deviation(queries, epsilon):
-    return dp.BoundedStandardDeviation(epsilon, 0, 15).result(queries.tolist())
-
-
-def dp_bounded_sum(queries, epsilon):
-    return dp.BoundedSum(epsilon, 0, 10).result(queries.tolist())
-
-
-def dp_bounded_variance(queries, epsilon):
-    return dp.BoundedVariance(epsilon, 0, 16).result(queries.tolist())
-
-
-def dp_max(queries, epsilon):
-    return dp.Max(epsilon).result(queries.tolist(), epsilon)
-
-
-def dp_min(queries, epsilon):
-    return dp.Min(epsilon).result(queries.tolist(), epsilon)
-
-
-def dp_median(queries, epsilon):
-    return dp.Median(epsilon).result(queries.tolist(), epsilon)
-
-
-def dp_percentile(queries, epsilon):
-    return dp.Percentile(epsilon).result(queries.tolist(), epsilon)
-
 
 algo_dict = {
     'bounded_functions': {
