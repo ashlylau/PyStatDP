@@ -20,11 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# Broken
-
 from pystatdp import pystatdp
 import pydp as dp
 
-psd = pystatdp()
+psd= pystatdp()
 
-psd.main(dp.algorithms.laplacian.BoundedMean, tuple((-15, 15)), tuple((0.9,)))
+psd.main(dp.BoundedMean, tuple((-15,15)), tuple((0.9,)))
