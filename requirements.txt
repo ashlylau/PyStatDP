@@ -1,0 +1,8 @@
+numpy 
+scipy 
+matplotlib 
+sympy 
+tqdm 
+numba 
+coloredlogs 
+jsonpickle
