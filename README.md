@@ -1,7 +1,9 @@
 # PyStatDP 
-This is a fork of [cmla-psu/statdp Statistical Counterexample Detector for Differential Privacy](https://github.com/cmla-psu/statdp) created to explore the possiblity of integrating it into the CI workfollow of projects with differentially private elements.
+This is a fork of [cmla-psu/statdp Statistical Counterexample Detector for Differential Privacy](https://github.com/cmla-psu/statdp) created to explore the possiblity of integrating it into the CI workfollow of projects with differentially private elements. 
 
-## Usage
+[![Build Status](https://travis-ci.org/OpenMined/PyStatDP.svg?branch=generic-feature)](https://travis-ci.org/OpenMined/PyStatDP) 
+
+## Usage 
 
 We assume your algorithm implementation has the folllowing signature: `(queries, epsilon, ...)` (list of queries, privacy budget and extra arguments).  
 

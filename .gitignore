@@ -16,8 +16,9 @@ coverage.xml
 parser.out
 parsetab.py
 
-# JetBrains generated files
+# IDE generated files
 .idea/
+.vscode/
 
 # Build files
 .cache/

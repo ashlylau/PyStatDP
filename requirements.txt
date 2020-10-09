@@ -6,4 +6,3 @@ tqdm
 numba 
 coloredlogs 
 jsonpickle
-python-dp

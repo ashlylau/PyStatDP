@@ -5,5 +5,8 @@ python:
 install:
   - pip install -r requirements.txt
   - pip install .
+  - pip install python-dp
+  - LD_LIBRARY_PATH=/usr/local/lib64/:$LD_LIBRARY_PATH
+  - export LD_LIBRARY_PATH
 # command to run tests
 script: python3 ./benchmark.py || python ./benchmark.py
