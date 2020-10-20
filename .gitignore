@@ -19,6 +19,7 @@ parsetab.py
 # IDE generated files
 .idea/
 .vscode/
+.vs/
 
 # Build files
 .cache/
@@ -49,3 +50,10 @@ z3/
 
 # pytest cache
 .pytest_cache
+
+#some extra files not intended for now
+tox.ini
+pytest.ini
+Dockerfile
+.dockerignore
+/tests/
