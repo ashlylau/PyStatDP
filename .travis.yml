@@ -12,11 +12,15 @@ install:
   - export LD_LIBRARY_PATH
 # command to run tests
 script: python3 ./benchmark.py || python ./benchmark.py
-# before_deploy:
-
+# deployment
+before_deploy:
+  - bumpversion --current-version 0.1.0 patch setup.py
 deploy:
+  skip_cleanup: true
   provider: pypi
   username: "__token__"
   password:
     secure: X1QzwcfxbxrpwrzH1T9PFROQDmtazM2MOgD4i34MQUEamHA2hVFMgG18QYfE3ceNbgbxMFiubkbWA4dSbXWxIXUlk13MkCPc0YoM0YXyOSRuVRk/TyRSNrn/AQTGB8ZkIqYFOQ1gb9+93JKNdHtF2ppypLwobf46DqqjKZA6bCzoaThxLa5SYKvcrk0pR4sWh5ikxHOOJAqvLl/I4guVDjBBVuhoPI9u0yuf9ypw7CtIhppA9f3LU2KC5ZVaIQ3v1j2V2Mvizqg18TX+ujDUMY9BciIIEcg0eFvUIkFkrF3fepHSQHaD/nIQjfaac7gM9oPokiXMt1Jcm9Whs4N2ECDPB5iPr4wN/ny84qx/iCCj/1qVQ1OTLcukWX7JhFUJmi45zLnxEtzGhqRffAzkppuQ8BaecMVBEJxjZ/bZxm380q+jBW2R6un6ArHfVIe62Q+TT+WbWC4yoDsc3Qe/3DuaF1gnDF9h9a+nLvWrDeOj8Zc4+yOZ+H6IImUgcNNcVPnXrt5Na3xzdWed0e2nHuh+HBv9kxpWpjNqxHg7M/73nHjQItKM0cGRv8++s79CKm9kJmE4kneyXcOIIXhmSQBzeKlztFAWr7tEbxDKchMfPeP6iT7KUb8ZCyNvMiUHEfgYQAcagtXoLjYBWuEMyKxfhBull25hI/Jz89VfF1Q=
+  on:
+    branch: master
 # after_deploy:
