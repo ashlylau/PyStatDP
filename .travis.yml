@@ -4,6 +4,7 @@ python:
 os: linux
 dist: bionic
 install:
+  - sudo apt-get update
   - pip install -r requirements.txt
   - pip install .
   - pip install python-dp
@@ -15,7 +16,7 @@ script: python3 -OO ./benchmark.py || python -OO ./benchmark.py
 cache: pip
 before_deploy:
   - bumpversion --commit --current-version 0.1.1 --new-version 0.1.3 patch setup.py
-  - python setup.py sdist bdist_wheel
+#   - python setup.py sdist bdist_wheel
 deploy:
   - provider: pypi
     username: "__token__"
