@@ -1,10 +1,8 @@
 language: python
-# cache: pip
 python:
   - "3.8"
 os: linux
 dist: bionic
-# command to install dependencies
 install:
   - pip install -r requirements.txt
   - pip install .
@@ -12,10 +10,10 @@ install:
   - LD_LIBRARY_PATH=/usr/local/lib64/:$LD_LIBRARY_PATH
   - export LD_LIBRARY_PATH
 # command to run tests
-script: python3 -OO ./benchmark.py || python -OO ./benchmark.py
-# deployment
+script: python3 --OO ./benchmark.py || python --OO ./benchmark.py
+cache: pip
 before_deploy:
-  - bumpversion --current-version 0.1.0 patch setup.py
+  - bumpversion --current-version 0.1.1 --commit True patch setup.py
   - python setup.py sdist bdist_wheel
 deploy:
   - provider: pypi
