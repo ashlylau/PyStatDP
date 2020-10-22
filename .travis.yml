@@ -11,7 +11,7 @@ install:
   - export LD_LIBRARY_PATH
 # command to run tests
 script: python3 --OO ./benchmark.py || python --OO ./benchmark.py
-cache: pip
+# cache: pip
 before_deploy:
   - bumpversion --current-version 0.1.1 --commit True patch setup.py
   - python setup.py sdist bdist_wheel
