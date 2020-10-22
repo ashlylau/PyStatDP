@@ -23,8 +23,8 @@
 # Broken
 
 from pystatdp import pystatdp
-import pydp as dp
+from pydp.algorithms.laplacian import BoundedMean
 
 psd = pystatdp()
 
-psd.main(dp.algorithms.laplacian.BoundedMean, tuple((-15, 15)), tuple((0.9,)))
+psd.main(BoundedMean, tuple((-15, 15)), tuple((0.9,)))

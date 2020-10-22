@@ -21,7 +21,6 @@
 # SOFTWARE.
 import matplotlib.pyplot as plt
 import matplotlib
-import coloredlogs
 from pathlib import Path
 from jsonpickle import encode
 import json
@@ -39,13 +38,9 @@ from pystatdp.algorithms import generic_method
 
 logger = logging.getLogger(__name__)
 
-
 matplotlib.use('agg')
 matplotlib.rcParams['xtick.labelsize'] = '12'
 matplotlib.rcParams['ytick.labelsize'] = '12'
-
-coloredlogs.install(
-    'INFO', fmt='%(asctime)s [0x%(process)x] %(levelname)s %(message)s')
 
 
 class pystatdp:

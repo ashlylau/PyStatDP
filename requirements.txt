@@ -3,7 +3,5 @@ scipy
 matplotlib 
 sympy 
 tqdm 
-numba 
-coloredlogs 
+numba  
 jsonpickle
-bumpversion

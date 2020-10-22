@@ -52,6 +52,6 @@ def generic_method(queries, epsilon, algorithm, param_for_algorithm):
 
     # print(algo_dict[str(algorithm)[13:-2]])
     if str(algorithm)[13:-2] in algo_dict['order_statistics'].keys():
-        return algorithm(epsilon).result(queries.tolist(), epsilon)
+        return algorithm(epsilon).quick_result(queries.tolist(), epsilon)
     else:
         return algorithm(epsilon, *param_for_algorithm).quick_result(queries.tolist())

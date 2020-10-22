@@ -56,7 +56,7 @@ For the best performance we recommend installing `pystatdp` in a `conda` virtual
 conda create -n pystatdp anaconda python=3.8
 conda activate pystatdp
 # install dependencies from conda for best performance
-conda install numpy numba matplotlib sympy tqdm coloredlogs jsonpickle pip
+conda install numpy numba matplotlib sympy tqdm jsonpickle pip
 # install icc_rt compiler for best performance with numba, this requires using intel's channel
 conda install -c intel icc_rt
 # install the remaining non-conda dependencies and pystatdp 

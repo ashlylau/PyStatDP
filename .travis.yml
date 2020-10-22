@@ -7,13 +7,14 @@ install:
   - pip install -r requirements.txt
   - pip install .
   - pip install python-dp
+  - pip install bumpversion
   - LD_LIBRARY_PATH=/usr/local/lib64/:$LD_LIBRARY_PATH
   - export LD_LIBRARY_PATH
 # command to run tests
 script: python3 -OO ./benchmark.py || python -OO ./benchmark.py
 cache: pip
 before_deploy:
-  - bumpversion --current-version 0.1.1 --commit patch setup.py
+  - bumpversion --commit --current-version 0.1.1 patch setup.py
   - python setup.py sdist bdist_wheel
 deploy:
   - provider: pypi
