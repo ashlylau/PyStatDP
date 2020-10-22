@@ -1,4 +1,5 @@
 language: python
+cache: pip
 python:
   - "3.8"
 os: linux
@@ -11,16 +12,26 @@ install:
   - LD_LIBRARY_PATH=/usr/local/lib64/:$LD_LIBRARY_PATH
   - export LD_LIBRARY_PATH
 # command to run tests
-script: python3 ./benchmark.py || python ./benchmark.py
+script: python3 --OO ./benchmark.py || python --OO ./benchmark.py
 # deployment
 before_deploy:
   - bumpversion --current-version 0.1.0 patch setup.py
+  - python setup.py sdist bdist_wheel
 deploy:
-  skip_cleanup: true
-  provider: pypi
-  username: "__token__"
-  password:
-    secure: X1QzwcfxbxrpwrzH1T9PFROQDmtazM2MOgD4i34MQUEamHA2hVFMgG18QYfE3ceNbgbxMFiubkbWA4dSbXWxIXUlk13MkCPc0YoM0YXyOSRuVRk/TyRSNrn/AQTGB8ZkIqYFOQ1gb9+93JKNdHtF2ppypLwobf46DqqjKZA6bCzoaThxLa5SYKvcrk0pR4sWh5ikxHOOJAqvLl/I4guVDjBBVuhoPI9u0yuf9ypw7CtIhppA9f3LU2KC5ZVaIQ3v1j2V2Mvizqg18TX+ujDUMY9BciIIEcg0eFvUIkFkrF3fepHSQHaD/nIQjfaac7gM9oPokiXMt1Jcm9Whs4N2ECDPB5iPr4wN/ny84qx/iCCj/1qVQ1OTLcukWX7JhFUJmi45zLnxEtzGhqRffAzkppuQ8BaecMVBEJxjZ/bZxm380q+jBW2R6un6ArHfVIe62Q+TT+WbWC4yoDsc3Qe/3DuaF1gnDF9h9a+nLvWrDeOj8Zc4+yOZ+H6IImUgcNNcVPnXrt5Na3xzdWed0e2nHuh+HBv9kxpWpjNqxHg7M/73nHjQItKM0cGRv8++s79CKm9kJmE4kneyXcOIIXhmSQBzeKlztFAWr7tEbxDKchMfPeP6iT7KUb8ZCyNvMiUHEfgYQAcagtXoLjYBWuEMyKxfhBull25hI/Jz89VfF1Q=
-  on:
-    branch: master
-# after_deploy:
+  - provider: pypi
+    username: "__token__"
+    password:
+      secure: X1QzwcfxbxrpwrzH1T9PFROQDmtazM2MOgD4i34MQUEamHA2hVFMgG18QYfE3ceNbgbxMFiubkbWA4dSbXWxIXUlk13MkCPc0YoM0YXyOSRuVRk/TyRSNrn/AQTGB8ZkIqYFOQ1gb9+93JKNdHtF2ppypLwobf46DqqjKZA6bCzoaThxLa5SYKvcrk0pR4sWh5ikxHOOJAqvLl/I4guVDjBBVuhoPI9u0yuf9ypw7CtIhppA9f3LU2KC5ZVaIQ3v1j2V2Mvizqg18TX+ujDUMY9BciIIEcg0eFvUIkFkrF3fepHSQHaD/nIQjfaac7gM9oPokiXMt1Jcm9Whs4N2ECDPB5iPr4wN/ny84qx/iCCj/1qVQ1OTLcukWX7JhFUJmi45zLnxEtzGhqRffAzkppuQ8BaecMVBEJxjZ/bZxm380q+jBW2R6un6ArHfVIe62Q+TT+WbWC4yoDsc3Qe/3DuaF1gnDF9h9a+nLvWrDeOj8Zc4+yOZ+H6IImUgcNNcVPnXrt5Na3xzdWed0e2nHuh+HBv9kxpWpjNqxHg7M/73nHjQItKM0cGRv8++s79CKm9kJmE4kneyXcOIIXhmSQBzeKlztFAWr7tEbxDKchMfPeP6iT7KUb8ZCyNvMiUHEfgYQAcagtXoLjYBWuEMyKxfhBull25hI/Jz89VfF1Q=
+    on:
+      repo: OpenMined/PyStatDP
+      branch: master
+    skip_cleanup: true
+  - provider: releases
+    api_key:
+      secure: vtgXFZyuc+Ebu7SypWOCZQo9iKg771ZVHCWk0r3eQHg//atsCLSBnAfvtMZdyCQLYMwS2E7jccTcnKcU4VvU4nSkay4Aey/R1VKl8INzo8ycnzv65EdIW+IAgF2kYWEq7DRmVLhozFpWUgFRWm71HmKajUOPCXxzuVdtZ0Yuk+zSbTU7ZY6Kz/YE13Zi2c1RcFjb1oxgWXRS+ABYLRkyNOADVNSKj5JGPkTn/OmPILzsgeesHeUbNLKzdL9qxGiqimPZaGCMFzODkEAWESgBQTc7hDPnZc7PIOrhiO/EeNNb0305i0lUtua6gm9eriNtzKX5uUVLa8QjvVYZP7fGH/6ncoTT5ULRJ6sb090GMIgI6LixbMXAZm6JLOfOBuU3qKUvAklsnQysk2GE8jfAOq6NmtAvkWl9E2+y2iJbxcZ+6VnzXsAYkbRZn/Q4zftZ1WFRSAtXVNlzynmuPfTEkElELN5vylHxFRKlxJ2arseLqGzGAFJoM558XjCUo4FE+zMKpDyTvA5/KkdG8IRkAzqBJ8KhhO3app96F4g1H4ByWx4RPpMHWlb/rS/CzNeEwxr8ZLKQVfGcr/JyEa4KeEuyKX9f+NLaQBsJmZHZuJ+k+thI5y0YG5rTCX99QSj1gwVv+XnW33TSGTDhvRYUvMur1U/MHjTExZPAbRHSKfo=
+    file_glob: true
+    file: dist/*
+    on:
+      repo: OpenMined/PyStatDP
+      branch: master
+    skip_cleanup: true
