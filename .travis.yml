@@ -14,7 +14,7 @@ install:
 script: python3 -OO ./benchmark.py || python -OO ./benchmark.py
 cache: pip
 before_deploy:
-  - bumpversion --commit --current-version 0.1.1 patch setup.py
+  - bumpversion --commit --current-version 0.1.1 --new-version 0.1.3 patch setup.py
   - python setup.py sdist bdist_wheel
 deploy:
   - provider: pypi
