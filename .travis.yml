@@ -12,7 +12,7 @@ install:
   - LD_LIBRARY_PATH=/usr/local/lib64/:$LD_LIBRARY_PATH
   - export LD_LIBRARY_PATH
 # command to run tests
-script: python3 --OO ./benchmark.py || python --OO ./benchmark.py
+script: python3 -OO ./benchmark.py || python -OO ./benchmark.py
 # deployment
 before_deploy:
   - bumpversion --current-version 0.1.0 patch setup.py
