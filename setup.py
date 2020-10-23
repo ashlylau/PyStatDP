@@ -6,7 +6,7 @@ with open('README.md', 'r') as f:
 
 setup(
     name='pystatdp',
-    version='0.1.1',
+    version='0.1.3.1',
     description='Counterexample Detection Using Statistical Methods for Incorrect Differential-Privacy Algorithms.',
     long_description=long_description,
     long_description_content_type="text/markdown",
