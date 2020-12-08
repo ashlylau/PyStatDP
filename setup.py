@@ -31,7 +31,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'pystatdp=pystatdp.__main__:main',
+            'pystatdp=pystatdp.pystatdp.main',
         ],
     },
 )

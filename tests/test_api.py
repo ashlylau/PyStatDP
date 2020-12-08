@@ -22,9 +22,8 @@
 import logging
 import pytest
 from flaky import flaky
-from statdp.algorithms import (SVT, iSVT1, iSVT2, iSVT3, iSVT4, noisy_max_v1a,
-                               noisy_max_v1b, noisy_max_v2a, noisy_max_v2b, histogram, histogram_eps)
-from statdp import detect_counterexample, ALL_DIFFER, ONE_DIFFER
+from pystatdp.algorithms import generic_method_pydp, algo_dict
+from pystatdp import detect_counterexample, ALL_DIFFER, ONE_DIFFER
 
 correct_algorithms = (
     (noisy_max_v1a, {}, 5, ALL_DIFFER),
@@ -54,11 +53,14 @@ def test_correct_algorithm(algorithm):
                                    num_input=num_input, loglevel=logging.DEBUG, sensitivity=sensitivity)
     assert isinstance(result, list) and len(result) == 3
     epsilon, p, *extras = result[0]
-    assert p <= 0.05, 'epsilon: {}, p-value: {} is not expected. extra info: {}'.format(epsilon, p, extras)
+    assert p <= 0.05, 'epsilon: {}, p-value: {} is not expected. extra info: {}'.format(
+        epsilon, p, extras)
     epsilon, p, *extras = result[1]
-    assert p >= 0.05, 'epsilon: {}, p-value: {} is not expected. extra info: {}'.format(epsilon, p, extras)
+    assert p >= 0.05, 'epsilon: {}, p-value: {} is not expected. extra info: {}'.format(
+        epsilon, p, extras)
     epsilon, p, *extras = result[2]
-    assert p >= 0.95, 'epsilon: {}, p-value: {} is not expected. extra info: {}'.format(epsilon, p, extras)
+    assert p >= 0.95, 'epsilon: {}, p-value: {} is not expected. extra info: {}'.format(
+        epsilon, p, extras)
 
 
 @pytest.mark.parametrize('algorithm', incorrect_algorithms,
@@ -71,7 +73,8 @@ def test_incorrect_algorithm(algorithm):
                                    num_input=num_input, loglevel=logging.DEBUG, sensitivity=sensitivity)
     assert isinstance(result, list) and len(result) == 1
     epsilon, p, *extras = result[0]
-    assert p <= 0.05, 'epsilon: {}, p-value: {} is not expected. extra info: {}'.format(epsilon, p, extras)
+    assert p <= 0.05, 'epsilon: {}, p-value: {} is not expected. extra info: {}'.format(
+        epsilon, p, extras)
 
 
 @flaky(max_runs=5)
@@ -80,4 +83,5 @@ def test_large_iterations():
                                    num_input=10, loglevel=logging.DEBUG, sensitivity=ALL_DIFFER,
                                    event_iterations=int(2e6), detect_iterations=int(5e6))
     epsilon, p, *extras = result[0]
-    assert p >= 0.05, 'epsilon: {}, p-value: {} is not expected. extra info: {}'.format(epsilon, p, extras)
+    assert p >= 0.05, 'epsilon: {}, p-value: {} is not expected. extra info: {}'.format(
+        epsilon, p, extras)

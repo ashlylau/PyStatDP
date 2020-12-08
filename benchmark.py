@@ -23,8 +23,9 @@
 # Broken
 
 from pystatdp import pystatdp
-from pydp.algorithms.laplacian import BoundedMean
+from pydp.algorithms.laplacian import BoundedMean, Max
 
 psd = pystatdp()
 
-psd.main(BoundedMean, tuple((-15, 15)), tuple((0.9,)))
+outBm= psd.main(algo=BoundedMean, param=tuple((-15, 15)), privacy=tuple((0.9,)), e_iter=1000, d_iter=5000, test_range= 0.5)
+# outM = psd.main(Max, tuple((-15, 15)), tuple((0.9,)), e_iter=1000, d_iter=5000)

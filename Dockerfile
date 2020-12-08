@@ -22,10 +22,10 @@
 FROM continuumio/miniconda3
 
 # copy statdp into the image
-COPY . /statdp
-WORKDIR /statdp
+COPY . /pystatdp
+WORKDIR /pystatdp
 
 # install dependencies from conda for best performance
 RUN conda install --yes numpy scipy matplotlib sympy tqdm numba jsonpickle pip && conda install --yes -c intel icc_rt && conda clean --all
-# install the remaining non-conda dependencies and statdp
+# install the remaining non-conda dependencies and pystatdp
 RUN pip install --no-cache-dir .
