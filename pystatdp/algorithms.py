@@ -49,9 +49,10 @@ def generic_method_pydp(queries, privacy, algorithm, param_for_algorithm):
     >>> example call with parameters: dp.BoundedMean(epsilon, -15, 15)
         0.0
     '''
-
+    if type(queries) != list:
+        queries = queries.tolist()
     # print(algo_dict[str(algorithm)[13:-2]])
     if str(algorithm)[13:-2] in algo_dict['order_statistics'].keys():
-        return algorithm(privacy).quick_result(queries.tolist(), privacy)
+        return algorithm(privacy).quick_result(queries, privacy)
     else:
-        return algorithm(privacy, *param_for_algorithm).quick_result(queries.tolist())
+        return algorithm(privacy, *param_for_algorithm).quick_result(queries)

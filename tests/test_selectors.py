@@ -22,6 +22,7 @@
 import multiprocessing as mp
 import pytest
 from pydp.algorithms.laplacian import BoundedMean
+from pystatdp.algorithms import generic_method_pydp
 from pystatdp.selectors import select_event
 
 
@@ -30,7 +31,8 @@ def test_select_event(process_pool):
     with process_pool:
         d1 = [0] + [2 for _ in range(4)]
         d2 = [1 for _ in range(5)]
-        _, _, _, event = select_event(BoundedMean, ((d1, d2, {'privacy': 0.9}),), 0.9, 100000, process_pool)
-        assert event == (0, )
-        # _, _, _, event = select_event(noisy_max_v1b, ((d1, d2, {'epsilon': 0.5}),), 0.5, 100000, process_pool)
-        # assert event[0][0] < 0 < event[0][1]
+        kwargs = {'algorithm': BoundedMean,
+                'param_for_algorithm': tuple((-15, 15))}
+        kwargs['privacy'] = 0.9
+        _, _, _, event = select_event(generic_method_pydp, ((d1, d2, kwargs),), 0.9, 1000, process_pool)
+        assert event[0][0] < event[0][1]

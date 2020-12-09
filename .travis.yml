@@ -16,9 +16,10 @@ install:
 # command to run tests
 script:
   - pytest tests/test_main_init_.py
+  - pytest tests/test_utils.py
+  - pytest tests/test_selectors.py
 after_success:
-  # - git pull
-  - git config --global user.name "Harkirat Singh"
+  - git config --global user.name "Harkirat155"
   - git config --global user.email "harkirat.hira@gmail.com"
   - yapf -vv -i $(find -name '*.py')
   - git commit -am "yapf run at travis"

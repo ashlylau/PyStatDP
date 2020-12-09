@@ -83,9 +83,9 @@ def generate_databases(algorithm, num_input, default_kwargs, sensitivity=ALL_DIF
             (d1, np.concatenate((dtwo[:int(num_input/2.0) + 1],\
                                  dzero[:num_input - int(num_input / 2.0) + 1]), axis=0)),  # [0 for _ in range(num_input - int(num_input / 2))]),
             # all above
-            (d1, dtwo),  
+            (d1, dtwo),
             # all below
-            (d1, dzero),  
+            (d1, dzero),
             # x shape
             (np.concatenate((d1[:int(np.floor(num_input / 2.0))+1], dzero[:int(np.ceil(num_input / 2.0))+1]), axis=0),
              np.concatenate((dzero[:int(np.floor(num_input / 2.0))+1], d1[:int(np.ceil(num_input / 2.0))+1]), axis=0))
