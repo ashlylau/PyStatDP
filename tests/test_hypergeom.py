@@ -25,7 +25,7 @@ from scipy.stats import hypergeom as reference
 from scipy.special import comb
 from numpy.ma.testutils import assert_almost_equal
 import pytest
-import statdp._hypergeom as hypergeom
+import pystatdp._hypergeom as hypergeom
 
 
 def test_precision():

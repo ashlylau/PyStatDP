@@ -18,6 +18,8 @@ script:
   - pytest tests/test_main_init_.py
   - pytest tests/test_utils.py
   - pytest tests/test_selectors.py
+  - pytest tests/test_hypotest.py
+  - pytest tests/test_hypergeom.py
 after_success:
   - git config --global user.name "Harkirat155"
   - git config --global user.email "harkirat.hira@gmail.com"

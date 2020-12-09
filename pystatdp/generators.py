@@ -80,8 +80,7 @@ def generate_databases(algorithm, num_input, default_kwargs, sensitivity=ALL_DIF
             # one below rest above
             (d1, np.concatenate((np.array([0]), dtwo[1:]), axis=0)),
             # half half
-            (d1, np.concatenate((dtwo[:int(num_input/2.0) + 1],\
-                                 dzero[:num_input - int(num_input / 2.0) + 1]), axis=0)),  # [0 for _ in range(num_input - int(num_input / 2))]),
+            (d1, np.concatenate((dtwo[:int(num_input/2.0) + 1], dzero[:num_input - int(num_input / 2.0) + 1]), axis=0)),  # [0 for _ in range(num_input - int(num_input / 2))]),
             # all above
             (d1, dtwo),
             # all below
