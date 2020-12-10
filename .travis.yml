@@ -8,8 +8,9 @@ install:
   - pip install -r requirements.txt
   - pip install .
   - pip install python-dp
-  - pip install yapf
+  # - pip install yapf
   - pip install pytest
+  - pip install flaky
   # - pip install bumpversion
   - LD_LIBRARY_PATH=/usr/local/lib64/:$LD_LIBRARY_PATH
   - export LD_LIBRARY_PATH
@@ -20,12 +21,8 @@ script:
   - pytest tests/test_selectors.py
   - pytest tests/test_hypotest.py
   - pytest tests/test_hypergeom.py
-after_success:
-  - git config --global user.name "Harkirat155"
-  - git config --global user.email "harkirat.hira@gmail.com"
-  - yapf -vv -i $(find -name '*.py')
-  - git commit -am "yapf run at travis"
-  - git push origin HEAD:$TRAVIS_BRANCH
+# after_success:
+#   - yapf -vv -i $(find -name '*.py')
 # cache: pip
 # before_deploy:
 # - bumpversion --commit --current-version 0.1.1 --new-version 0.1.3 patch setup.py
