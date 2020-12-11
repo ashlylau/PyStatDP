@@ -24,7 +24,7 @@ setup(
     keywords='Differential Privacy, Hypothesis Test, Statistics',
     packages=find_packages(exclude=['tests']),
     install_requires=['numpy', 'tqdm', 'numba',
-                      'jsonpickle', 'matplotlib', 'sympy'],
+                      'jsonpickle', 'matplotlib', 'sympy','pydp'],
     python_requires='>=3.6',
     extras_require={
         'test': ['pytest-cov', 'pytest', 'coverage', 'flaky', 'scipy'],
