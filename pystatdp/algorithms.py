@@ -36,22 +36,23 @@ algo_dict = {
 }
 
 
-def generic_method(queries, epsilon, algorithm, param_for_algorithm):
+def generic_method_pydp(queries, privacy, algorithm, param_for_algorithm):
     '''
     A generic method to route incoming tasks.
     param queries: queries to the algorithm
     param epsilon: privacy budget
     param algorithm: The algorithm to be tested; (e.g dp.BoundedMean, dp.BoundedSum)
-    param param_to_algorithm (a tuple): inputs to the algortihm. 
+    param param_to_algorithm (a tuple): inputs to the algortihm.
 
     queries = [1,2,3,4,5]
-    print(generic_method(prng, queries, 1.0, dp.BoundedMean, (-15,15)))
+    print(generic_method_pydp(prng, queries, 1.0, dp.BoundedMean, (-15,15)))
     >>> example call with parameters: dp.BoundedMean(epsilon, -15, 15)
         0.0
     '''
-
+    if type(queries) != list:
+        queries = queries.tolist()
     # print(algo_dict[str(algorithm)[13:-2]])
     if str(algorithm)[13:-2] in algo_dict['order_statistics'].keys():
-        return algorithm(epsilon).quick_result(queries.tolist(), epsilon)
+        return algorithm(privacy).quick_result(queries, privacy)
     else:
-        return algorithm(epsilon, *param_for_algorithm).quick_result(queries.tolist())
+        return algorithm(privacy, *param_for_algorithm).quick_result(queries)

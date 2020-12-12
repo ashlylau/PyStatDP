@@ -34,7 +34,8 @@ from tqdm import tqdm
 from pystatdp.generators import generate_arguments, generate_databases, ALL_DIFFER, ONE_DIFFER
 from pystatdp.hypotest import hypothesis_test
 from pystatdp.selectors import select_event
-from pystatdp.algorithms import generic_method
+from pystatdp.algorithms import generic_method_pydp
+from pystatdp.utils import arr_n_check
 
 logger = logging.getLogger(__name__)
 
@@ -146,15 +147,15 @@ class pystatdp:
 
             return result
 
-    def main(self, algo, param, epsilon):
+    def main(self, algo, param, privacy, e_iter=100000, d_iter=500000, test_range=0.1, n_checks=3):
         # list of tasks to test, each tuple contains (function, extra_args, sensitivity)
         tasks = [
-            (generic_method, {'algorithm': algo,
-                              'param_for_algorithm': param}, ALL_DIFFER)
+            (generic_method_pydp, {'algorithm': algo,
+                                   'param_for_algorithm': param}, ALL_DIFFER)
         ]
 
         # claimed privacy level to check
-        claimed_privacy = epsilon
+        claimed_privacy = privacy
 
         for i, (algorithm, kwargs, sensitivity) in enumerate(tasks):
             start_time = time.time()
@@ -162,12 +163,11 @@ class pystatdp:
             flag_file = time.ctime().replace(' ', '_')
             for privacy_budget in claimed_privacy:
                 # # privacy levels to test, here we test the claimed privacy plus .01 above and below
-                test_privacy = (privacy_budget - .09,
-                                privacy_budget, privacy_budget + .09)
+                test_privacy = arr_n_check(privacy_budget, test_range, n_checks)
                 # set the second argument of the function (assumed to be `epsilon`) to the claimed privacy level
                 kwargs[algorithm.__code__.co_varnames[1]] = privacy_budget
                 results[privacy_budget] = self.detect_counterexample(
-                    algorithm, test_privacy, kwargs, sensitivity=sensitivity)
+                    algorithm, test_privacy, kwargs, sensitivity=sensitivity, event_iterations=e_iter, detect_iterations=d_iter)
 
             # dump the results to file
             json_file = Path.cwd() / f'{algorithm.__name__}_{flag_file}.json'
@@ -185,3 +185,4 @@ class pystatdp:
                 len(test_privacy)
             logger.info(f'[{i + 1} / {len(tasks)}]: {algorithm.__name__} | Time elapsed: {total_time:5.3f}s | '
                         f'Average time per detection: {total_time / total_detections:5.3f}s')
+        return 0

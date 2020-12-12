@@ -30,7 +30,7 @@ import pystatdp._hypergeom as hypergeom
 
 
 @njit
-def test_statistics(cx, cy, epsilon, iterations):
+def statistics_test(cx, cy, epsilon, iterations):
     """ Calculate p-value based on observed results.
     :param cx: The observed count of running algorithm with database 1 that falls into the event
     :param cy:The observed count of running algorithm with database 2 that falls into the event
@@ -82,6 +82,6 @@ def hypothesis_test(algorithm, d1, d2, kwargs, event, epsilon, iterations, proce
 
     # calculate and return p value
     if report_p2:
-        return test_statistics(cx, cy, epsilon, iterations), test_statistics(cy, cx, epsilon, iterations)
+        return statistics_test(cx, cy, epsilon, iterations), statistics_test(cy, cx, epsilon, iterations)
     else:
-        return test_statistics(cx, cy, epsilon, iterations)
+        return statistics_test(cx, cy, epsilon, iterations)

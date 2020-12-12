@@ -25,7 +25,7 @@ from logging import getLogger
 import numpy as np
 from tqdm import tqdm
 
-from pystatdp.hypotest import test_statistics
+from pystatdp.hypotest import statistics_test
 from pystatdp.core import run_algorithm
 
 logger = getLogger(__name__)
@@ -67,7 +67,7 @@ def select_event(algorithm, input_list, epsilon, iterations, process_pool, quiet
 
         # calculate p-values based on counts
         for (cx, cy) in local_counts:
-            p_values.append(test_statistics(cx, cy, epsilon, iterations)
+            p_values.append(statistics_test(cx, cy, epsilon, iterations)
                             if cx + cy > threshold else float('inf'))
 
     # log the information for debug purposes

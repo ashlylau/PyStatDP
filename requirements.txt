@@ -1,7 +1,8 @@
-numpy 
-scipy 
-matplotlib 
-sympy 
-tqdm 
-numba  
 jsonpickle
+matplotlib
+numba
+numpy
+pre-commit
+scipy
+sympy
+tqdm
