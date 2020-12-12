@@ -21,8 +21,8 @@
 # SOFTWARE.
 
 from pystatdp import pystatdp
-import pydp as dp
+from pydp.algorithms.laplacian import BoundedMean, Max
 
-psd= pystatdp()
+psd = pystatdp()
 
-psd.main(dp.BoundedMean, tuple((-15,15)), tuple((0.9,)))
+psd.main(BoundedMean, tuple((-15, 15)), tuple((0.9,)), e_iter=1000, d_iter=5000, test_range= 0.5)
