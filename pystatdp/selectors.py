@@ -54,7 +54,6 @@ def select_event(algorithm, input_list, epsilon, iterations, process_pool, quiet
         _evaluate_input, algorithm=algorithm, iterations=iterations)
 
     threshold = 0.001 * iterations * np.exp(epsilon)
-
     event_evaluator = tqdm(process_pool.imap_unordered(partial_evaluate_input, input_list),
                                 desc='Finding best inputs/events', total=len(input_list), unit='input', leave=False,
                                 disable=quiet)
@@ -64,7 +63,6 @@ def select_event(algorithm, input_list, epsilon, iterations, process_pool, quiet
         # put the results in the list for later references
         counts.extend(local_counts)
         input_event_pairs.extend(local_input_event_pair)
-
         # calculate p-values based on counts
         for (cx, cy) in local_counts:
             p_values.append(statistics_test(cx, cy, epsilon, iterations)

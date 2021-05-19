@@ -93,9 +93,8 @@ def run_algorithm(algorithm, d1, d2, kwargs, event, total_iterations):
                     combined_result = np.concatenate(
                         (result_d1[row], result_d2[row]))
                     unique = np.unique(combined_result)
-
                     # categorical output
-                    if len(unique) < iterations * 0.002:
+                    if len(unique) < iterations * 0.1:
                         event_search_space.append(
                             tuple(int(key) for key in unique))
                     else:
@@ -109,7 +108,6 @@ def run_algorithm(algorithm, d1, d2, kwargs, event, total_iterations):
                         event_search_space.append(
                             tuple((-float('inf'), float(alpha)) for alpha in
                                   np.linspace(combined_result[search_min], combined_result[search_max], num=10)))
-
                 logger.debug(
                     f"search space is set to {' × '.join(str(event) for event in event_search_space)}")
             else:

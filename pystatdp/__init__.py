@@ -138,8 +138,10 @@ class pystatdp:
                                                      process_pool=pool)
                 p = hypothesis_test(algorithm, d1, d2, kwargs, event, epsilon, detect_iterations, report_p2=False,
                                     process_pool=pool)
-                result.append((epsilon, float(p), d1.tolist(),
-                               d2.tolist(), kwargs, event))
+                if type(d1) != list:
+                    d1 = d1.tolist()
+                    d2 = d2.tolist()
+                result.append((epsilon, float(p), d1, d2, kwargs, event))
                 if not quiet:
                     tqdm.write(
                         f'Epsilon: {epsilon} | p-value: {p:5.3f} | Event: {event}')
@@ -169,20 +171,20 @@ class pystatdp:
                 results[privacy_budget] = self.detect_counterexample(
                     algorithm, test_privacy, kwargs, sensitivity=sensitivity, event_iterations=e_iter, detect_iterations=d_iter)
 
-            # dump the results to file
-            json_file = Path.cwd() / f'{algorithm.__name__}_{flag_file}.json'
+            # # dump the results to file
+            # json_file = Path.cwd() / f'{algorithm.__name__}_{flag_file}.json'
 
-            with json_file.open('w') as f:
-                json.dump(encode(results, unpicklable=False), f)
+            # with json_file.open('w') as f:
+            #     json.dump(encode(results, unpicklable=False), f)
 
-            # plot and save to file
-            plot_file = Path.cwd() / f'{algorithm.__name__}_{flag_file}.pdf'
+            # # plot and save to file
+            # plot_file = Path.cwd() / f'{algorithm.__name__}_{flag_file}.pdf'
 
-            self.plot_result(results, r'Test $\epsilon$', 'P Value',
-                             algorithm.__name__.replace('_', ' ').title(), plot_file)
+            # self.plot_result(results, r'Test $\epsilon$', 'P Value',
+            #                  algorithm.__name__.replace('_', ' ').title(), plot_file)
 
             total_time, total_detections = time.time() - start_time, len(claimed_privacy) * \
                 len(test_privacy)
             logger.info(f'[{i + 1} / {len(tasks)}]: {algorithm.__name__} | Time elapsed: {total_time:5.3f}s | '
                         f'Average time per detection: {total_time / total_detections:5.3f}s')
-        return 0
+        return results
