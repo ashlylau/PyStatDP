@@ -22,7 +22,8 @@ from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB as SKLGaussianNB
 from sklearn.linear_model import LogisticRegression as SKLLogisticRegression
-from imblearn.over_sampling import RandomOverSampler
+from sklearn.linear_model import LinearRegression as SKLLinearRegression
+from imblearn.over_sampling import RandomOverSampler, SMOTE
 from imblearn.under_sampling import RandomUnderSampler
 
 
@@ -50,11 +51,12 @@ class Iris:
 
 
 class Adult:
-    def __init__(self, privacy, lower, upper, X_train, y_train, X_test, pred_len, train_privacy, impl='ibm'):
+    def __init__(self, privacy, lower, upper, X_train, y_train, X_test, pred_len, train_privacy, impl='ibm-linreg'):
         self.X_train = X_train
         self.y_train = y_train
         self.X_test = X_test
         self.pred_len = pred_len
+        self.impl = impl
         if impl == 'ibm-logreg':
             clf = IBMLogisticRegression(epsilon=train_privacy, data_norm=100)
         elif impl == 'skl-logreg':
@@ -72,7 +74,9 @@ class Adult:
             self.X_train = np.append(self.X_train[:i*j], self.X_train[i*j+j:], axis=0)
             self.y_train = np.append(self.y_train[:i*j], self.y_train[i*j+j:], axis=0)
         self.clf.fit(self.X_train, self.y_train)
-        # Maybe here if we want to output categorical for linreg, use self.impl to find implementation and use threshold to change to categorical
+        if self.impl in ['ibm-logreg', 'skl-logreg', 'pydp-nb']:
+            # Return probabilities of minority class
+            return self.clf.predict_proba(self.X_test[:self.pred_len])[:, 1].tolist()
         return self.clf.predict(self.X_test[:self.pred_len]).tolist()
 
 
@@ -97,6 +101,7 @@ class AdultResample(Adult):
         # Maybe here if we want to output categorical for linreg, use self.impl to find implementation and use threshold to change to categorical
         return self.clf.predict(self.X_test[:self.pred_len]).tolist()
 
+
 class Diabetes:
     def __init__(self, privacy, bounds_X, bounds_y, X_train, y_train, X_test, pred_len, train_privacy):
         self.X_train = X_train
@@ -108,27 +113,96 @@ class Diabetes:
 
     def quick_result(self, data):
         i = data[0]
+        j = 10
         if i != -1:
-            self.X_train = np.append(self.X_train[:i-1], self.X_train[i:], axis=0)
-            self.y_train = np.append(self.y_train[:i-1], self.y_train[i:], axis=0)
+            self.X_train = np.append(self.X_train[:i*j], self.X_train[i*j+j:], axis=0)
+            self.y_train = np.append(self.y_train[:i*j], self.y_train[i*j+j:], axis=0)
         self.regr.fit(self.X_train, self.y_train)
         return self.regr.predict(self.X_test[:self.pred_len]).tolist()
 
 
-class PrivateWrapper:
-    def __init__(self,privacy,lower, upper, priors, probability, var_smoothing, X_train, y_train, X_test, pred_len):
-        self.lower = lower
-        self.upper = upper
-        self.priors = priors
-        self.probability = probability
-        self.var_smoothing = var_smoothing
-        clf = PyDPGaussianNB(epsilon=privacy, bounds=(lower, upper),probability=probability, var_smoothing=var_smoothing)
-        clf.fit(X_train, y_train)
+class Pima:
+    def __init__(self, privacy, lower, upper, X_train, y_train, X_test, pred_len, train_privacy, impl='ibm-nb'):
+        self.X_train = X_train
+        self.y_train = y_train
+        self.X_test = X_test
+        self.pred_len = pred_len
+        self.impl = impl
+        if impl == 'pydp-nb':
+            clf = PyDPGaussianNB(epsilon=train_privacy, bounds=(lower, upper))
+        elif impl == 'ibm-nb':
+            clf = IBMGaussianNB(epsilon=train_privacy, bounds=(lower, upper))
+        elif impl == 'ibm-logreg':
+            clf = IBMLogisticRegression(epsilon=train_privacy, max_iter=10000, data_norm=10000)
+        elif impl == 'ibm-linreg':
+            clf = IBMLinearRegression(epsilon=train_privacy, bounds_X=(lower, upper), bounds_y=(0.0,1.0))
+        else:
+            clf = SKLGaussianNB()
         self.clf = clf
 
     def quick_result(self, data):
-        data = np.asarray(data).reshape(-1, 1)
-        return self.clf.predict(data).tolist()
+        i = data[0]
+        j = 10
+        if i != -1:
+            self.X_train = np.append(self.X_train[:i*j], self.X_train[i*j+j:], axis=0)
+            self.y_train = np.append(self.y_train[:i*j], self.y_train[i*j+j:], axis=0)
+        self.clf.fit(self.X_train, self.y_train)
+        return self.clf.predict(self.X_test[:self.pred_len]).tolist()
+
+
+class Machine:
+    def __init__(self, privacy, lower, upper, X_train, y_train, X_test, pred_len, train_privacy, impl='ibm-nb'):
+        self.X_train = X_train
+        self.y_train = y_train
+        self.X_test = X_test
+        self.pred_len = pred_len
+        self.impl = impl
+        if impl == 'ibm-linreg':
+            clf = IBMLinearRegression(epsilon=train_privacy, bounds_X=(lower, upper), bounds_y=(0.0,1.0))
+        else:
+            clf = SKLLinearRegression()
+        self.clf = clf
+
+    def quick_result(self, data):
+        i = data[0]
+        j = 5
+        if i != -1:
+            self.X_train = np.append(self.X_train[:i*j], self.X_train[i*j+j:], axis=0)
+            self.y_train = np.append(self.y_train[:i*j], self.y_train[i*j+j:], axis=0)
+        self.clf.fit(self.X_train, self.y_train)
+        return self.clf.predict(self.X_test[:self.pred_len]).tolist()
+
+class MachineResample(Machine):
+    def __init__(self, privacy, sampling_type, sampling_ratio, *args):
+        self.sampling_type = sampling_type
+        self.sampling_ratio = sampling_ratio
+        super().__init__(privacy, *args)
+
+    def quick_result(self, data):
+        i = data[0]
+        j = 5
+        if i != -1:
+            self.X_train = np.append(self.X_train[:i*j], self.X_train[i*j+j:], axis=0)
+            self.y_train = np.append(self.y_train[:i*j], self.y_train[i*j+j:], axis=0)
+        
+        full_data = np.append(self.X_train, self.y_train.reshape(-1,1), axis=1)
+        labels = np.where(self.y_train > 200, 1, 0)
+        
+        if self.sampling_type == 'over':
+            full_data_over, _ = RandomOverSampler(sampling_strategy=self.sampling_ratio).fit_resample(full_data, labels)
+            self.X_train = full_data_over[:,:-1]
+            self.y_train = full_data_over[:,-1:].ravel()
+        elif self.sampling_type == 'under':
+            full_data_over, _ = RandomUnderSampler(sampling_strategy=self.sampling_ratio).fit_resample(full_data, labels)
+            self.X_train = full_data_over[:,:-1]
+            self.y_train = full_data_over[:,-1:].ravel()
+        else: # SMOTE resampling
+            full_data_over, _ = SMOTE(sampling_strategy=self.sampling_ratio).fit_resample(full_data, labels)
+            self.X_train = full_data_over[:,:-1]
+            self.y_train = full_data_over[:,-1:].ravel()
+
+        self.clf.fit(self.X_train, self.y_train)
+        return self.clf.predict(self.X_test[:self.pred_len]).tolist()
 
 
 class Dummy:
@@ -151,6 +225,7 @@ if __name__ == "__main__":
     parser.add_argument('--d_iter', type=int, default=50, help='number of iterations to run detection algorithm')
     parser.add_argument('--pred_len', type=int, default=3, help='length of prediction output')
     parser.add_argument('--misclassified', action='store_true', default=False, help='use likely misclassified points as test points')
+    parser.add_argument('--misclassified_minority', action='store_true', default=False, help='use likely misclassified and minority class points as test points')
     parser.add_argument('--full_dataset', action='store_true', default=False, help='use full dataset to train model')
     parser.add_argument('--impl', default='ibm', help='which implementation to use')
     parser.add_argument('--sampling_type', default='over', help='over, under or smote sampling')
@@ -199,7 +274,11 @@ if __name__ == "__main__":
     elif args.algorithm == 'diabetes':
         dataset = datasets.load_diabetes()
         X_train, X_test, y_train, y_test = train_test_split(dataset.data[:, :2], dataset.target, test_size=0.2, random_state=42)
-
+        
+        # Join train and test sets.
+        X_full = np.append(X_train, X_test, axis=0)
+        y_full = np.append(y_train, y_test, axis=0)     
+        
         bounds_X = (-0.138, 0.2)
         bounds_y = (25, 346)
 
@@ -218,27 +297,68 @@ if __name__ == "__main__":
         y_train = np.where(y_train == '>50K', 1, 0)
         y_test = np.where(y_test == '>50K', 1, 0)
         
-        # lower = [17, 1, 0, 0, 1]
-        # upper = [100, 160, 100000, 4500, 100]
+        # Join train and test sets.
+        X_full = np.append(X_train, X_test, axis=0)
+        y_full = np.append(y_train, y_test, axis=0)     
+       
         lower = [17.,  1.,  0.,  0.,  1.]
         upper = [9.0000e+01, 1.6000e+01, 9.9999e+04, 4.3560e+03, 9.9000e+01]
 
         # Get minority samples from test set. ('>50K' is the minority class)
-        minority_test_indices = np.where(y_test == 1)
-        X_test = X_test[minority_test_indices]
+        minority_test_indices = np.where(y_full == 1)
+        X_test = X_full[minority_test_indices]
 
-        if args.misclassified:
+        if args.misclassified_minority:
+            likely_misclassified_minority = [10, 25, 27, 40995, 38, 24614, 24616, 32809, 8234, 41009, 8243, 16438, 8249, 8252, 63, 8262]
+            X_test = np.take(X_full, likely_misclassified_minority, axis=0)
+        elif args.misclassified:
             # Set X_test as likely misclassified points
-            likely_misclassified = [16386, 5, 8206, 24596, 27, 24606, 38, 24614, 24616, 8234, 49, 16433, 8243, 54, 16438, 58, 16443, 8252, 63]
-            likely_misclassified_minority = [27, 24606, 38, 24614, 24616, 8234, 8243, 16438, 8252, 63, 8258, 67, 68, 8262, 72, 16460, 8279, 89, 24666]
-            X_test = np.take(X_train, likely_misclassified_minority, axis=0)
-
+            likely_misclassified = [6153, 6844, 455, 7335, 25, 7749, 16088, 27, 39862, 28, 5974, 4947, 8750, 9023, 11449, 38]
+            X_test = np.take(X_full, likely_misclassified, axis=0)
+            
         if args.algorithm == 'adult-resample':
             algorithm = AdultResample
-            algo_params = tuple((args.sampling_type, args.sampling_ratio, lower, upper, X_train, y_train, X_test, args.pred_len, args.train_privacy, args.impl))
+            algo_params = tuple((args.sampling_type, args.sampling_ratio, lower, upper, X_full, y_full, X_test, args.pred_len, args.train_privacy, args.impl))
         else:
             algorithm = Adult
-            algo_params = tuple((lower, upper, X_train, y_train, X_test, args.pred_len, args.train_privacy, args.impl))
+            algo_params = tuple((lower, upper, X_full, y_full, X_test, args.pred_len, args.train_privacy, args.impl))
+
+    elif args.algorithm == 'pima':
+        X_full = np.loadtxt("data/pima-indians-diabetes.csv", usecols=(0,1,2,3,4,5,6,7), delimiter=",")
+        y_full = np.loadtxt("data/pima-indians-diabetes.csv", usecols=(8), delimiter=",")
+
+        lower = [0,0,0,0,0,0,0.078,21]
+        upper = [17,199,122,99,856,68,2.42,81]
+
+        likely_misclassified = [4, 405, 6, 508, 7, 468, 8, 286, 9, 684, 12, 642, 13, 228]
+        likely_misclassified_minority = [6, 9, 10, 522, 12, 524, 14, 16, 17, 18, 19, 20, 23, 25, 26, 539, 540, 31, 544]
+        if args.misclassified_minority:
+            X_test = np.take(X_full, likely_misclassified_minority, axis=0)
+        elif args.misclassified:
+            X_test = np.take(X_full, likely_misclassified, axis=0)
+        else:
+            X_test = X_full
+
+        algorithm = Pima
+        algo_params = tuple((lower, upper, X_full, y_full, X_test, args.pred_len, args.train_privacy, args.impl))
+
+    elif args.algorithm in ['machine', 'machine-resample']:
+        data = np.loadtxt('data/machine.data', usecols=(2,3,4,5,6,7,8), delimiter=',')
+        X_full = np.loadtxt('data/machine.data', usecols=(2,3,4,5,6,7), delimiter=',')
+        y_full = np.loadtxt('data/machine.data', usecols=(8), delimiter=',')
+
+        lower = [17., 64., 64.,  0.,  0.,  0.]
+        upper = [1.50e+03, 3.20e+04, 6.40e+04, 2.56e+02, 5.20e+01, 1.76e+02]
+
+        outliers = [199, 2, 5, 6, 7, 8, 9, 30, 31, 35, 65, 94, 95, 96, 97, 150, 151, 152, 153, 154, 155, 156, 169, 191, 192, 195, 196, 197, 198, 1]
+        X_test = np.take(X_full, outliers, axis=0)
+
+        if args.algorithm == 'machine-resample':
+            algorithm = MachineResample
+            algo_params = tuple((args.sampling_type, args.sampling_ratio, lower, upper, X_full, y_full, X_test, args.pred_len, args.train_privacy, args.impl))
+        else:
+            algorithm = Machine
+            algo_params = tuple((lower, upper, X_full, y_full, X_test, args.pred_len, args.train_privacy, args.impl))
 
     else:
         algorithm = Dummy

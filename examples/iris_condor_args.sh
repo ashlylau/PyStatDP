@@ -28,6 +28,7 @@ do
         -sampling_type=*) sampling_type="${arg#*=}";;
         -sampling_ratio=*) sampling_ratio="${arg#*=}";;
         -misclassified) misclassified=--misclassified;;
+        -misclassified_minority) misclassified_minority=--misclassified_minority;;
         -full_dataset) full_dataset=--full_dataset;;
     esac
 done
@@ -36,5 +37,5 @@ python --version
 source ~/.bashrc
 python --version
 TERM=vt100 # or TERM=xterm
-python3 -u -W ignore iris.py --privacy $privacy --e_iter $e_iter --d_iter $d_iter --pred_len $pred_len --n_checks $n_checks --test_range $test_range --train_privacy $train_privacy --algorithm $algorithm --impl $impl --sampling_ratio $sampling_ratio --sampling_type $sampling_type $misclassified $full_dataset 
+python3 -u -W ignore iris.py --privacy $privacy --e_iter $e_iter --d_iter $d_iter --pred_len $pred_len --n_checks $n_checks --test_range $test_range --train_privacy $train_privacy --algorithm $algorithm --impl $impl --sampling_ratio $sampling_ratio --sampling_type $sampling_type $misclassified $misclassified_minority $full_dataset 
 uptime

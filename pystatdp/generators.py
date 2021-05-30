@@ -65,11 +65,15 @@ def generate_databases(algorithm, num_input, default_kwargs, sensitivity=ALL_DIF
             'sensitivity must be pystatdp.ALL_DIFFER or pystatdp.ONE_DIFFER')
 
     algo_name = str(default_kwargs['algorithm'])[17:-2]
-    if algo_name in ['Iris', 'Adult', 'Diabetes', 'AdultResample']:
+    if algo_name in ['Iris', 'Adult', 'Diabetes', 'AdultResample', 'Pima', 'Machine', 'MachineResample']:
         if algo_name == 'Iris':
             db_range = 150
         elif algo_name == 'Diabetes':
-            db_range = 353
+            db_range = 44
+        elif algo_name == 'Pima':
+            db_range = 70
+        elif algo_name in ['Machine', 'MachineResample']:
+            db_range = 50
         else:  # Adult dataset
             db_range = 30
         
